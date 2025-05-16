@@ -725,12 +725,17 @@
       }
     });
 
-    function showCounter() {
-      document.getElementById("counter-container").style.display = "block";
-      document.getElementById("result-container").style.display = "none";
-      document.getElementById("search-card").style.display = "none";
-      scrollToTop();
-    }
+function showCounter() {
+  const counterContainer = document.getElementById("counter-container");
+  const resultContainer = document.getElementById("result-container");
+  const searchCard = document.querySelector(".search-card");
+  
+  if (counterContainer) counterContainer.style.display = "block";
+  if (resultContainer) resultContainer.style.display = "none";
+  if (searchCard) searchCard.style.display = "none";
+  
+  scrollToTop();
+}
 
     function scrollToTop() {
       window.scrollTo({
