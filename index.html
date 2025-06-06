@@ -773,14 +773,6 @@
                     showCounter();
                     clearInterval(intervalId);
                     
-                    if (!odometer) {
-                        odometer = new Odometer({
-                            el: document.getElementById("subscriber-count"),
-                            value: 0,
-                            format: '(,ddd)',
-                            theme: 'minimal'
-                        });
-                    }
                     
                     fetchStatsData();
                     intervalId = setInterval(fetchStatsData, 2000);
