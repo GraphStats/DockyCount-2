@@ -322,16 +322,27 @@
             letter-spacing: 1px;
         }
         
-        .odometer {
-            font-size: 4rem;
-            font-weight: 800;
-            font-family: 'Inter', sans-serif;
-            margin: 1rem 0;
-            background: linear-gradient(90deg, var(--light), var(--primary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
+.odometer {
+    font-size: 4rem;
+    font-weight: 800;
+    font-family: 'Inter', sans-serif;
+    margin: 1rem 0;
+    background: linear-gradient(90deg, var(--light), var(--primary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+        .odometer.odometer-auto-theme, .odometer.odometer-theme-minimal {
+    font-size: 4rem !important;
+    font-weight: 800 !important;
+    font-family: 'Inter', sans-serif !important;
+    margin: 1rem 0 !important;
+    background: linear-gradient(90deg, var(--light), var(--primary)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+}
         
         .counter-actions {
             display: flex;
@@ -720,6 +731,13 @@
             const loader = document.getElementById("loader");
             const resultsContainer = document.getElementById("results-container");
             const resultsGrid = document.getElementById("results-grid");
+            
+            odometer = new Odometer({
+    el: document.getElementById("subscriber-count"),
+    value: channel.statistics.subscriberCount,
+    format: '(,ddd)',
+    theme: 'default' // ou supprimez complètement cette ligne
+});
             
             // Show loader and hide results
             loader.style.display = "block";
