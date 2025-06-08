@@ -1,977 +1,2046 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FastCount - YouTube Subscriber Tracker</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap" rel="stylesheet">
-    <!-- Preload fonts for performance -->
-    <link rel="preload" 
-          href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" 
-          as="style" 
-          onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
-    </noscript>
-
-    <!-- Odometer Theme -->
-    <link rel="stylesheet" 
-          href="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css" />
-
-    <link rel="icon" type="image/png" 
-          href="https://cdn.glitch.global/3646dfb4-5cb1-4c3c-9337-1d56b96025d2/Design_sans_titre-removebg-preview%20(1).png?v=1746820022653" />
-    <meta name="description" content="FastCount - Real-time YouTube subscriber counter">
-
-    <!-- Google AdSense -->
-    <script async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7562628849511682"
-            crossorigin="anonymous"></script>
-    <meta name="google-adsense-account" content="ca-pub-7562628849511682">
-
-    <!-- Google Tag Manager -->
-    <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({
-          'gtm.start': new Date().getTime(),
-          event: 'gtm.js'
-        });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s), dl = l !== 'dataLayer' ? '&l=' + l : '';
-        j.async = true;
-        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, 'script', 'dataLayer', 'GTM-T4X83ZSG');
-    </script>
-
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QMLQLT7FTY"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() { dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', 'G-QMLQLT7FTY');
-    </script>
-
-    <!-- Odometer.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
-
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Odometer -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-minimal.css">
+    
     <style>
-      :root {
-        --primary-color: #4361ee;
-        --secondary-color: #3f37c9;
-        --accent-color: #ffffff;
-        --dark-color: #1a1a2e;
-        --light-color: #f8f9fa;
-        --success-color: #4bb543;
-        --text-color: #333;
-        --text-light: #f8f9fa;
-        --card-bg: rgba(255, 255, 255, 0.9);
-        --transition: all 0.3s ease;
-      }
-
-      *,
-      *::before,
-      *::after {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        min-height: 100vh;
-        font-family: 'Poppins', sans-serif;
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-color);
-        overflow-x: hidden;
-        position: relative;
-        padding: 20px;
-        transition: background 0.3s ease, color 0.3s ease;
-      }
-
-      body.dark-mode {
-        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-        color: var(--text-light);
-      }
-
-      /* Logo Styles */
-      #logo-container {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        z-index: 2;
-      }
-
-      #logo {
-        width: 50px;
-        height: 50px;
-        transition: transform 0.3s ease;
-      }
-
-      #logo:hover {
-        transform: scale(1.1);
-      }
-
-      #logo-text {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        transition: color 0.3s ease;
-      }
-
-      body.dark-mode #logo-text {
-        color: var(--accent-color);
-      }
-
-      /* Main Container */
-      .main-container {
-        width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.8s ease, transform 0.8s ease;
-      }
-      
-      .main-container.visible {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      /* Search Card */
-      .search-card {
-        background: var(--card-bg);
-        border-radius: 16px;
-        padding: 30px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        margin-bottom: 30px;
-        transition: var(--transition);
-      }
-
-      body.dark-mode .search-card {
-        background: rgba(30, 30, 60, 0.8);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      }
-
-      .search-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-      }
-
-      .search-title {
-        font-size: 2rem;
-        margin-bottom: 20px;
-        color: var(--primary-color);
-        font-weight: 600;
-        transition: color 0.3s ease;
-      }
-
-      body.dark-mode .search-title {
-        color: var(--accent-color);
-      }
-
-      .search-description {
-        font-size: 1rem;
-        margin-bottom: 30px;
-        color: var(--text-color);
-        opacity: 0.8;
-        transition: color 0.3s ease;
-      }
-
-      body.dark-mode .search-description {
-        color: var(--text-light);
-      }
-
-      .search-input-container {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-      }
-
-      .search-input {
-        flex: 1;
-        min-width: 250px;
-        max-width: 500px;
-        padding: 15px 20px;
-        font-size: 1rem;
-        border-radius: 50px;
-        border: 2px solid #e0e0e0;
-        outline: none;
-        background: white;
-        color: var(--text-color);
-        transition: var(--transition);
-      }
-
-      body.dark-mode .search-input {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.2);
-        color: white;
-      }
-
-      .search-input:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-      }
-
-      body.dark-mode .search-input:focus {
-        border-color: var(--accent-color);
-        box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.3);
-      }
-
-      .search-button {
-        padding: 15px 30px;
-        border: none;
-        border-radius: 50px;
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        color: white;
-        font-weight: 600;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .search-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
-      }
-
-      .search-button:active {
-        transform: translateY(0);
-      }
-
-      /* Result Container */
-      .result-container {
-        width: 100%;
-        margin-top: 30px;
-      }
-
-      .result-title {
-        font-size: 1.5rem;
-        margin-bottom: 20px;
-        color: var(--primary-color);
-        text-align: center;
-        transition: color 0.3s ease;
-      }
-
-      body.dark-mode .result-title {
-        color: var(--accent-color);
-      }
-
-      #result-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 20px;
-        margin-top: 20px;
-      }
-
-      .channel-result {
-        background: var(--card-bg);
-        border-radius: 12px;
-        padding: 20px;
-        color: var(--text-color);
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-      }
-
-      body.dark-mode .channel-result {
-        background: rgba(30, 30, 60, 0.8);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      }
-
-      .channel-result:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      }
-
-      body.dark-mode .channel-result:hover {
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-      }
-
-      .channel-avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid var(--primary-color);
-        transition: border-color 0.3s ease;
-      }
-
-      body.dark-mode .channel-avatar {
-        border-color: var(--accent-color);
-      }
-
-      .channel-name {
-        font-weight: 500;
-        font-size: 1rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      /* Counter Container */
-      #counter-container {
-        display: none;
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
-        background: var(--card-bg);
-        border-radius: 16px;
-        padding: 40px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        transition: var(--transition);
-      }
-
-      body.dark-mode #counter-container {
-        background: rgba(30, 30, 60, 0.9);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      }
-
-      #channel-avatar {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        border: 3px solid var(--primary-color);
-        object-fit: cover;
-        margin: 0 auto 20px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      }
-
-      body.dark-mode #channel-avatar {
-        border-color: var(--accent-color);
-      }
-
-      #channel-name {
-        font-size: 1.8rem;
-        margin-bottom: 10px;
-        font-weight: 600;
-        color: var(--primary-color);
-        transition: color 0.3s ease;
-      }
-
-      body.dark-mode #channel-name {
-        color: var(--accent-color);
-      }
-
-      .subscriber-label {
-        font-size: 1rem;
-        color: var(--text-color);
-        opacity: 0.8;
-        margin-bottom: 10px;
-      }
-
-      body.dark-mode .subscriber-label {
-        color: var(--text-light);
-      }
-
-      #subscriber-count {
-        font-family: 'Roboto', sans-serif;
-        font-size: 4rem;
-        font-weight: 700;
-        color: var(--text-color);
-        margin: 20px 0;
-        transition: color 0.3s ease;
-      }
-
-      body.dark-mode #subscriber-count {
-        color: var(--text-light);
-      }
-
-      /* Counter Actions */
-      .counter-actions {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 30px;
-        flex-wrap: wrap;
-      }
-
-      .counter-button {
-        padding: 12px 25px;
-        border: none;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .share-button {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        color: white;
-      }
-
-      .share-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
-      }
-
-      .minimal-button {
-        background: var(--card-bg);
-        color: var(--primary-color);
-        border: 2px solid var(--primary-color);
-      }
-
-      body.dark-mode .minimal-button {
-        background: rgba(30, 30, 60, 0.8);
-        color: var(--accent-color);
-        border-color: var(--accent-color);
-      }
-
-      .minimal-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      }
-
-      .share-options {
-        display: none;
-        position: absolute;
-        bottom: 100%;
-        right: 0;
-        background: var(--card-bg);
-        border-radius: 12px;
-        padding: 10px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        z-index: 100;
-        width: 200px;
-      }
-
-      body.dark-mode .share-options {
-        background: rgba(30, 30, 60, 0.95);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      }
-
-      .share-option {
-        padding: 10px 15px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: var(--text-color);
-      }
-
-      body.dark-mode .share-option {
-        color: var(--text-light);
-      }
-
-      .share-option:hover {
-        background: rgba(67, 97, 238, 0.1);
-      }
-
-      body.dark-mode .share-option:hover {
-        background: rgba(76, 201, 240, 0.2);
-      }
-
-      .share-option svg {
-        width: 1.2rem;
-        height: 1.2rem;
-        fill: currentColor;
-      }
-
-      /* Loader */
-      .loader {
-        display: none;
-        width: 50px;
-        height: 50px;
-        border: 5px solid #f3f3f3;
-        border-top: 5px solid var(--primary-color);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 30px auto;
-      }
-
-      body.dark-mode .loader {
-        border-color: rgba(255, 255, 255, 0.1);
-        border-top-color: var(--accent-color);
-      }
-
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-
-      .footer {
-        margin-top: 50px;
-        text-align: center;
-        font-size: 0.8rem;
-        color: var(--text-color);
-        opacity: 0.7;
-      }
-
-      body.dark-mode .footer {
-        color: var(--text-light);
-      }
-
-      .theme-toggle {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: var(--card-bg);
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        z-index: 100;
-        transition: var(--transition);
-      }
-
-      body.dark-mode .theme-toggle {
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      }
-
-      .theme-toggle:hover {
-        transform: translateY(-3px);
-      }
-
-      .theme-icon {
-        font-size: 1.5rem;
-        color: var(--primary-color);
-        transition: color 0.3s ease;
-      }
-
-      body.dark-mode .theme-icon {
-        color: var(--accent-color);
-      }
-
-      .live-visitors {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        background: var(--card-bg);
-        padding: 8px 15px;
-        border-radius: 50px;
-        font-size: 0.8rem;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      }
-
-      body.dark-mode .live-visitors {
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      }
-
-      .visitor-icon {
-        color: var(--success-color);
-      }
-
-      .visitor-count {
-        font-weight: 600;
-      }
-
-      /* Minimal mode styles */
-      .minimal-mode #logo-container,
-      .minimal-mode .search-card,
-      .minimal-mode .result-container,
-      .minimal-mode .footer,
-      .minimal-mode .theme-toggle,
-      .minimal-mode .live-visitors,
-      .minimal-mode #channel-avatar,
-      .minimal-mode #channel-name,
-      .minimal-mode .subscriber-label,
-      .minimal-mode .counter-actions {
-        display: none !important;
-      }
-
-      .minimal-mode #counter-container {
-        background: transparent;
-        box-shadow: none;
-        padding: 0;
-        max-width: 100%;
-      }
-
-      .minimal-mode #subscriber-count {
-        font-size: 10rem;
-        color: #fff;
-        margin: 0;
-      }
-
-      body.dark-mode.minimal-mode #subscriber-count {
-        color: var(--accent-color);
-      }
-
-      /* Responsive styles */
-      @media (max-width: 768px) {
-        .search-title {
-          font-size: 1.5rem;
+        :root {
+            --primary: #4f8cff;
+            --primary-dark: #357ae8;
+            --secondary: #5eead4;
+            --dark: #181a20;
+            --darker: #13151a;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --card-bg: #23263a;
+            --card-border: #2d3147;
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.25), 0 4px 6px -4px rgba(0,0,0,0.18);
         }
         
-        #subscriber-count {
-          font-size: 3rem;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
-        .search-input-container {
-          flex-direction: column;
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
         }
         
-        .search-input {
-          width: 100%;
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
-        .search-button {
-          width: 100%;
-          justify-content: center;
+        /* Layout */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            opacity: 0;
+            animation: fadeIn 0.8s forwards;
+            animation-delay: 0.2s;
         }
         
-        #result-list {
-          grid-template-columns: 1fr;
-        }
-      }
-      
-      @media (max-width: 480px) {
-        .main-container {
-          padding: 10px;
+        /* Header */
+        .header {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(19, 21, 26, 0.95);
+            border-bottom: 1px solid var(--card-border);
+            color: var(--light);
+            backdrop-filter: blur(8px);
         }
         
+        .logo {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--light);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .logo:hover {
+            color: var(--primary);
+        }
+        .logo-icon {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+        
+        /* Search Card */
         .search-card {
-          padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background: var(--card-bg);
+            border-radius: 1.25rem;
+            padding: 2.5rem;
+            margin: 6rem auto 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--card-border);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(0);
+            animation: fadeIn 0.8s;
+        }
+        .search-card:hover {
+            transform: translateY(-18px) scale(1.03) rotate(-1deg);
+            box-shadow: 0 32px 48px -8px rgba(79,140,255,0.18), 0 8px 32px -8px rgba(94,234,212,0.08), 0 2px 8px rgba(0,0,0,0.10);
+            border-color: var(--secondary);
+            z-index: 2;
+        }
+        .search-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+        .search-description {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+        .search-form {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .search-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            border: none;
+            background: #181a20;
+            color: var(--light);
+            font-size: 1rem;
+            border: 1px solid var(--card-border);
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.18);
+        }
+        .search-input::placeholder {
+            color: var(--gray);
+        }
+        .search-button {
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            background: var(--primary);
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+        }
+        .search-button:hover {
+            background: var(--primary-dark);
+        }
+        .search-button:active {
+            transform: translateY(0);
         }
         
-        #subscriber-count {
-          font-size: 2.5rem;
+        /* Results */
+        .results-container {
+            display: none;
+            margin-top: 2rem;
+            animation: fadeIn 0.6s forwards;
+        }
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--light);
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .channel-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 2px 8px rgba(79,140,255,0.08);
+            transform: translateY(0);
+            animation: fadeIn 0.7s;
+        }
+        .channel-card:hover {
+            transform: translateY(-15px) scale(1.04) rotate(1deg);
+            background: #23263a;
+            border-color: var(--primary);
+            box-shadow: 0 24px 40px -8px rgba(79,140,255,0.15), 0 8px 32px -8px rgba(94,234,212,0.08), 0 2px 8px rgba(0,0,0,0.10);
+            z-index: 2;
+        }
+        .channel-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+        .channel-info {
+            flex: 1;
+            overflow: hidden;
+        }
+        .channel-name {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .channel-id {
+            font-size: 0.85rem;
+            color: var(--gray);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
+        /* Counter */
+        .counter-container {
+            display: none;
+            background: var(--card-bg);
+            border-radius: 1.25rem;
+            padding: 3rem;
+            margin: 6rem auto 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--card-border);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: fadeIn 0.6s forwards;
+        }
+        .counter-container:hover {
+            transform: translateY(-12px) scale(1.02) rotate(-0.5deg);
+            box-shadow: 0 24px 40px -8px rgba(79,140,255,0.13), 0 8px 32px -8px rgba(94,234,212,0.07), 0 2px 8px rgba(0,0,0,0.09);
+            border-color: var(--primary);
+        }
+        .channel-header {
+            margin-bottom: 2rem;
+        }
+        .channel-avatar-lg {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(79,140,255,0.18);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .channel-avatar-lg:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 25px -5px rgba(79,140,255,0.22);
+        }
+        .channel-name-lg {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        .subscriber-label {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .odometer {
+            font-size: 4rem;
+            font-weight: 800;
+            font-family: 'Inter', sans-serif;
+            margin: 1rem 0;
+            color: var(--primary);
+        }
         .counter-actions {
-          flex-direction: column;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
         }
-        
-        .counter-button {
-          width: 100%;
-          justify-content: center;
+        .action-button {
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-      }
+        .share-button {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+        }
+        .share-button:hover {
+            background: var(--primary-dark);
+        }
+        .minimal-button {
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            background: #181a20;
+        }
+        .minimal-button:hover {
+            background: #23263a;
+        }
+        /* Share dropdown */
+        .share-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .share-options {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+            min-width: 200px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--card-border);
+            z-index: 10;
+            margin-bottom: 0.5rem;
+        }
+        .share-option {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: background 0.2s;
+        }
+        .share-option:hover {
+            background: #23263a;
+        }
+        /* Loader */
+        .loader {
+            display: none;
+            width: 60px;
+            height: 60px;
+            margin: 2rem auto;
+            position: relative;
+        }
+        .loader-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 4px solid transparent;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        .loader-circle:nth-child(2) {
+            border-top-color: var(--secondary);
+            animation-delay: 0.2s;
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Minimal mode */
+        .minimal-mode .header,
+        .minimal-mode .search-card,
+        .minimal-mode .results-container,
+        .minimal-mode .footer {
+            display: none !important;
+        }
+        .minimal-mode .counter-container {
+            background: transparent;
+            box-shadow: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            display: flex !important;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: none;
+        }
+        .minimal-mode .channel-header,
+        .minimal-mode .subscriber-label,
+        .minimal-mode .counter-actions {
+            display: none !important;
+        }
+        .minimal-mode .odometer {
+            font-size: 8rem;
+            animation: pulse 2s infinite;
+        }
+        /* Footer */
+        .footer {
+            background: #181a20;
+            color: var(--gray);
+            border-top: 1px solid var(--card-border);
+            text-align: center;
+            margin-top: 4rem;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+        }
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            background: rgba(79, 140, 255, 0.08);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+        /* Home block styles */
+        .home-block {
+            font-family: 'Inter', sans-serif;
+            position: static;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            background: none;
+        }
+        .home-card {
+            font-family: 'Inter', sans-serif;
+            margin: 3rem 0 0 3rem;
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--card-border);
+            padding: 3rem 2.5rem 2.5rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.8s;
+            max-width: 95vw;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(0);
+        }
+        .home-card:hover {
+            font-family: 'Inter', sans-serif;
+            transform: translateY(-22px) scale(1.035) rotate(-1.5deg);
+            box-shadow: 0 36px 56px -10px rgba(79,140,255,0.18), 0 10px 36px -10px rgba(94,234,212,0.10), 0 2px 8px rgba(0,0,0,0.12);
+            border-color: var(--primary);
+            z-index: 2;
+        }
+        .home-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin-bottom: 2.2rem;
+            text-shadow: none;
+            text-align: center;
+        }
+        .home-link {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.2s;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        .home-link:hover {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary);
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            color: var(--primary);
+        }
+        /* Hide container by default for home */
+        .container.hidden,
+        .header.hidden,
+        .footer.hidden {
+            display: none !important;
+        }
+        /* Hide home block for /youtube */
+        .home-block.hidden {
+            display: none !important;
+        }
+        @media (max-width: 600px) {
+            .home-card {
+                font-family: 'Inter', sans-serif;
+                padding: 2rem 1rem 1.5rem 1rem;
+            }
+            .home-title {
+                font-family: 'Inter', sans-serif;
+                font-size: 2.1rem;
+            }
+            .home-link {
+                font-family: 'Inter', sans-serif;
+                font-size: 1.1rem;
+            }
+        }
+        /* --- MODIFICATIONS POUR STYLE PLUS CLAIR ET SANS DEGRADÉ --- */
+        :root {
+            --primary: #4f8cff;
+            --primary-dark: #357ae8;
+            --secondary: #5eead4;
+            --dark: #181a20;
+            --darker: #13151a;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --card-bg: #23263a;
+            --card-border: #2d3147;
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.25), 0 4px 6px -4px rgba(0,0,0,0.18);
+        }
+        body {
+            background: var(--darker);
+            color: var(--light);
+        }
+        .header {
+            background: rgba(19, 21, 26, 0.95);
+            border-bottom: 1px solid var(--card-border);
+            color: var(--light);
+        }
+        .logo, .logo:hover {
+            color: var(--primary);
+        }
+        .logo-icon {
+            color: var(--primary);
+        }
+        .search-card,
+        .counter-container,
+        .home-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow);
+        }
+        .search-title,
+        .results-title,
+        .channel-name-lg,
+        .home-title {
+            background: none !important;
+            color: var(--primary) !important;
+            -webkit-background-clip: unset !important;
+            background-clip: unset !important;
+        }
+        .search-button,
+        .share-button {
+            background: var(--primary);
+            color: #fff;
+        }
+        .search-button:hover,
+        .share-button:hover {
+            background: var(--primary-dark);
+        }
+        .minimal-button {
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            background: #f8fafc;
+        }
+        .minimal-button:hover {
+            background: #e0e7ef;
+        }
+        .channel-avatar,
+        .channel-avatar-lg {
+            border: 2px solid var(--primary);
+        }
+        .results-container,
+        .results-title {
+            color: var(--light);
+        }
+        .odometer {
+            background: none !important;
+            color: var(--primary) !important;
+        }
+        .footer {
+            background: #181a20;
+            color: var(--gray);
+            border-top: 1px solid var(--card-border);
+        }
+        .home-title {
+            text-shadow: none;
+        }
+        .home-link,
+        .home-link:hover {
+            background: none !important;
+            color: var(--primary) !important;
+            -webkit-background-clip: unset !important;
+            background-clip: unset !important;
+        }
+        .home-link[style*="not-allowed"] {
+            color: #aaa !important;
+        }
+        /* Particules plus discrètes */
+        .particle {
+            background: rgba(79, 140, 255, 0.08);
+        }
+        /* Share dropdown */
+        .share-options {
+            background: var(--card-bg);
+            color: var(--light);
+            border: 1px solid var(--card-border);
+        }
+        .share-option:hover {
+            background: #23263a;
+        }
+        /* Loader */
+        .loader-circle {
+            border-top-color: var(--primary);
+        }
+        .loader-circle:nth-child(2) {
+            border-top-color: var(--secondary);
+        }
+        /* Minimal mode */
+        .minimal-mode .counter-container {
+            background: transparent;
+            box-shadow: none;
+            border: none;
+        }
+        .minimal-mode .odometer {
+            color: var(--primary) !important;
+        }
     </style>
-  </head>
-  <body>
-    <noscript>
-      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T4X83ZSG" height="0" width="0" style="display:none;visibility:hidden"></iframe>
-    </noscript>
-
-    <div id="logo-container" aria-label="FastCount Homepage">
-      <div id="logo-text">FastCount</div>
+</head>
+<body class="dark-mode">
+    <!-- Gros logo et titre FastCount ajouté -->
+    <div style="width:100%;text-align:center;padding-top:2.5rem;">
+        <span style="font-size:3.2rem;font-weight:900;letter-spacing:2px;color:#4f8cff;display:inline-flex;align-items:center;gap:1rem;">
+            <i class="fas fa-chart-line" style="font-size:3.2rem;color:#4f8cff;"></i>
+            FastCount
+        </span>
     </div>
-
-    <div class="main-container" id="main-content">
-      <div class="search-card">
-        <h1 class="search-title">YouTube Subscriber Tracker</h1>
-        <p class="search-description">
-          Track real-time subscriber counts for any YouTube channel
-        </p>
-        <div class="search-input-container">
-          <input type="text" 
-                 id="channel-input" 
-                 class="search-input" 
-                 placeholder="Enter YouTube channel name" 
-                 onkeypress="handleKeyPress(event)" 
-                 aria-label="YouTube channel name" />
-          <button class="search-button" onclick="fetchChannelData()" aria-label="Search for channel">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-            </svg>
-            Search
-          </button>
-        </div>
-        <div class="loader" id="loader"></div>
-      </div>
-
-      <div class="result-container" id="result-container">
-        <h2 class="result-title">Search Results</h2>
-        <div id="result-list"></div>
-      </div>
-
-      <div id="counter-container">
-        <img id="channel-avatar" src="" alt="Channel Avatar" />
-        <h2 id="channel-name"></h2>
-        <p class="subscriber-label">Subscribers</p>
-        <div id="subscriber-count" class="odometer">0</div>
-        <div class="counter-actions">
-          <div class="share-container" style="position: relative;">
-            <button class="counter-button share-button" onclick="toggleShareOptions()" aria-label="Share this channel">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
-              </svg>
-              Share
-            </button>
-            <div class="share-options" id="share-options">
-              <div class="share-option" onclick="shareOnTwitter()" aria-label="Share on Twitter">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A3.328 3.328 0 0 1 .78 13.58a3.328 3.328 0 0 1-.397-.018 3.324 3.324 0 0 0 3.126 2.319 9.334 9.334 0 0 1-6.593 2.854c-.44 0-.873-.025-1.295-.075a9.344 9.344 0 0 0 5.063 1.481z"/>
-                </svg>
-                Twitter
-              </div>
-              <div class="share-option" onclick="copyLink()" aria-label="Copy link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1H2z"/>
-                </svg>
-                Copy Link
-              </div>
+    <!-- Texte d'accueil ajouté -->
+    <div style="width:100%;text-align:center;padding:2rem 0 1rem 0;font-size:1.35rem;font-weight:600;color:#4f8cff;letter-spacing:1px;">
+        Track subscribers and followers on your favorite social networks in real time!
+    </div>
+    <!-- Floating particles background -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Home block -->
+    <div class="home-block" id="home-block">
+        <div style="display: flex; gap: 2.5rem; align-items: flex-start;">
+            <div class="home-card">
+                <div class="home-title">
+                    <i class="fab fa-youtube" style="color:#ff0000; margin-right: 0.5rem;"></i>
+                    YouTube
+                </div>
+                <span class="home-link" id="goto-youtube">YouTube Live Subscriber Counter</span>
             </div>
-          </div>
-          <button class="counter-button minimal-button" onclick="activateMinimalMode()" aria-label="Activate minimal mode">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M9.465 10H12a2 2 0 1 1 0 4H9.465c.34-.588.535-1.271.535-2 0-.729-.195-1.412-.535-2z"/>
-              <path d="M6 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 1a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm.535-10a3.975 3.975 0 0 1-.409-1H4a1 1 0 0 1 0-2h2.126c.091-.355.23-.69.41-1H4a2 2 0 1 0 0 4h2.535z"/>
-              <path d="M14 4a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
-            </svg>
-            Minimal Mode
-          </button>
+            <div class="home-card">
+                <div class="home-title" style="color: #1da1f2;">
+                    <i class="fab fa-x-twitter" style="color:#1da1f2; margin-right: 0.5rem;"></i>
+                    Twitter
+                </div>
+                <span class="home-link" id="goto-twitter">Twitter Live Follower Counter</span>
+            </div>
+            <!-- Bloc Instagram -->
+            <div class="home-card">
+                <div class="home-title" style="color: #e1306c;">
+                    <i class="fab fa-instagram" style="color:#e1306c; margin-right: 0.5rem;"></i>
+                    Instagram
+                </div>
+                <span class="home-link" id="goto-instagram">Instagram Live Follower Counter</span>
+            </div>
+            <!-- Bloc TikTok -->
+            <div class="home-card">
+                <div class="home-title" style="color: #000;">
+                    <i class="fab fa-tiktok" style="color:#000; margin-right: 0.5rem;"></i>
+                    TikTok
+                </div>
+                <span class="home-link" id="goto-tiktok">TikTok Live Follower Counter</span>
+            </div>
         </div>
-      </div>
     </div>
-
-    <div class="footer">
-      FastCount v1.0.0 (BETA) | Powered by GraphStats
+    
+    <!-- Header -->
+    <header class="header hidden" id="main-header">
+        <a href="#" class="logo" id="logo-link">
+            <i class="fas fa-chart-line logo-icon"></i>
+            <span>FastCount</span>
+        </a>
+    </header>
+    
+    <!-- Main content -->
+    <div class="container hidden" id="main-container">
+        <!-- Search card -->
+        <div class="search-card">
+            <h1 class="search-title">YouTube Subscriber Tracker</h1>
+            <p class="search-description">
+                Track real-time subscriber counts for any YouTube channel with beautiful analytics.
+            </p>
+            <div class="search-form">
+                <input type="text" 
+                       class="search-input" 
+                       id="channel-input" 
+                       placeholder="Enter YouTube channel name"
+                       onkeypress="handleKeyPress(event)">
+                <button class="search-button" onclick="fetchChannelData()">
+                    <i class="fas fa-search"></i>
+                    Search
+                </button>
+            </div>
+            <div class="loader" id="loader">
+                <div class="loader-circle"></div>
+                <div class="loader-circle"></div>
+            </div>
+        </div>
+        <!-- Bloc ajouté : YouTube Live View Counter -->
+        <div class="search-card" style="margin-top:1.5rem;">
+            <h1 class="search-title">YouTube Live View Counter</h1>
+            <p class="search-description">
+                Track real-time views, likes and comments for any YouTube video.
+            </p>
+            <div class="search-form">
+                <input type="text"
+                       class="search-input"
+                       id="ytvideo-input"
+                       placeholder="Enter YouTube video title"
+                       onkeypress="handleYTVideoKeyPress(event)">
+                <button class="search-button" onclick="fetchYTVideoData()">
+                    <i class="fas fa-search"></i>
+                    Search
+                </button>
+            </div>
+            <div class="loader" id="ytvideo-loader" style="display:none;">
+                <div class="loader-circle"></div>
+                <div class="loader-circle"></div>
+            </div>
+        </div>
+        <!-- Résultats de recherche vidéo -->
+        <div class="results-container" id="ytvideo-results-container" style="display:none;">
+            <h2 class="results-title">Video Search Results</h2>
+            <div class="results-grid" id="ytvideo-results-grid"></div>
+        </div>
+        <!-- Compteur vidéo -->
+        <div class="counter-container" id="ytvideo-counter-container" style="display:none;">
+            <div class="channel-header">
+                <img src="" alt="Video Thumbnail" class="channel-avatar-lg" id="ytvideo-thumbnail">
+                <h2 class="channel-name-lg" id="ytvideo-title"></h2>
+                <p class="subscriber-label">Live Video Stats</p>
+                <div style="display:flex;justify-content:center;gap:2.5rem;">
+                    <div style="text-align:center;">
+                        <div style="color:var(--primary);font-weight:700;">Views</div>
+                        <div class="odometer" id="ytvideo-views">0</div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="color:var(--primary);font-weight:700;">Likes</div>
+                        <div class="odometer" id="ytvideo-likes">0</div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="color:var(--primary);font-weight:700;">Comments</div>
+                        <div class="odometer" id="ytvideo-comments">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Results container -->
+        <div class="results-container" id="results-container">
+            <h2 class="results-title">Search Results</h2>
+            <div class="results-grid" id="results-grid"></div>
+        </div>
+        <!-- Counter container -->
+        <div class="counter-container" id="counter-container">
+            <div class="channel-header">
+                <img src="" alt="Channel Avatar" class="channel-avatar-lg" id="channel-avatar">
+                <h2 class="channel-name-lg" id="channel-name"></h2>
+                <p class="subscriber-label">Subscribers</p>
+                <div class="odometer" id="subscriber-count">0</div>
+            </div>
+            <div class="counter-actions">
+                <div class="share-dropdown">
+                    <button class="action-button share-button" onclick="toggleShareOptions()">
+                        <i class="fas fa-share-alt"></i>
+                        Share
+                    </button>
+                    <div class="share-options" id="share-options">
+                        <div class="share-option" onclick="shareOnTwitter()">
+                            <i class="fab fa-twitter"></i>
+                            Twitter
+                        </div>
+                        <div class="share-option" onclick="copyLink()">
+                            <i class="fas fa-link"></i>
+                            Copy Link
+                        </div>
+                    </div>
+                </div>
+                <button class="action-button minimal-button" onclick="activateMinimalMode()">
+                    <i class="fas fa-minimize"></i>
+                    Minimal Mode
+                </button>
+            </div>
+        </div>
     </div>
-
-    <div class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light theme">
-      <div class="theme-icon">🌓</div>
+    <!-- Twitter container -->
+    <div class="container hidden" id="twitter-container">
+        <!-- Search card -->
+        <div class="search-card">
+            <h1 class="search-title" style="background: linear-gradient(90deg,#1da1f2,#6366f1);">Twitter Follower Tracker</h1>
+            <p class="search-description">
+                Track real-time follower counts for any Twitter/X account with beautiful analytics.
+            </p>
+            <div class="search-form">
+                <input type="text" 
+                       class="search-input" 
+                       id="twitter-input" 
+                       placeholder="Enter Twitter username"
+                       onkeypress="handleTwitterKeyPress(event)">
+                <button class="search-button" style="background: linear-gradient(135deg,#1da1f2,#6366f1);" onclick="fetchTwitterData()">
+                    <i class="fab fa-x-twitter"></i>
+                    Search
+                </button>
+            </div>
+            <div class="loader" id="twitter-loader">
+                <div class="loader-circle"></div>
+                <div class="loader-circle"></div>
+            </div>
+        </div>
+        <!-- Results container -->
+        <div class="results-container" id="twitter-results-container">
+            <h2 class="results-title">Search Results</h2>
+            <div class="results-grid" id="twitter-results-grid"></div>
+        </div>
+        <!-- Counter container -->
+        <div class="counter-container" id="twitter-counter-container">
+            <div class="channel-header">
+                <img src="" alt="Twitter Avatar" class="channel-avatar-lg" id="twitter-avatar">
+                <h2 class="channel-name-lg" id="twitter-name"></h2>
+                <p class="subscriber-label">Followers</p>
+                <div class="odometer" id="twitter-follower-count">0</div>
+            </div>
+            <div class="counter-actions">
+                <div class="share-dropdown">
+                    <button class="action-button share-button" style="background: linear-gradient(135deg,#1da1f2,#6366f1);" onclick="toggleTwitterShareOptions()">
+                        <i class="fas fa-share-alt"></i>
+                        Share
+                    </button>
+                    <div class="share-options" id="twitter-share-options">
+                        <div class="share-option" onclick="shareTwitterOnTwitter()">
+                            <i class="fab fa-twitter"></i>
+                            Twitter
+                        </div>
+                        <div class="share-option" onclick="copyTwitterLink()">
+                            <i class="fas fa-link"></i>
+                            Copy Link
+                        </div>
+                    </div>
+                </div>
+                <button class="action-button minimal-button" onclick="activateTwitterMinimalMode()">
+                    <i class="fas fa-minimize"></i>
+                    Minimal Mode
+                </button>
+            </div>
+        </div>
     </div>
-
-    <div class="live-visitors">
-      <span class="visitor-icon">👥</span>
-      <span>Live:</span>
-      <span class="visitor-count" id="visitor-count">...</span>
+    <!-- Instagram container -->
+    <div class="container hidden" id="instagram-container">
+        <!-- Search card -->
+        <div class="search-card">
+            <h1 class="search-title" style="color:#e1306c;">Instagram Follower Tracker</h1>
+            <p class="search-description">
+                Track real-time follower counts for any Instagram account with beautiful analytics.
+            </p>
+            <div class="search-form">
+                <input type="text" 
+                       class="search-input" 
+                       id="instagram-input" 
+                       placeholder="Enter Instagram username"
+                       onkeypress="handleInstagramKeyPress(event)">
+                <button class="search-button" style="background: linear-gradient(135deg,#e1306c,#fdc468);" onclick="fetchInstagramData()">
+                    <i class="fab fa-instagram"></i>
+                    Search
+                </button>
+            </div>
+            <div class="loader" id="instagram-loader">
+                <div class="loader-circle"></div>
+                <div class="loader-circle"></div>
+            </div>
+        </div>
+        <!-- Results container -->
+        <div class="results-container" id="instagram-results-container">
+            <h2 class="results-title">Search Results</h2>
+            <div class="results-grid" id="instagram-results-grid"></div>
+        </div>
+        <!-- Counter container -->
+        <div class="counter-container" id="instagram-counter-container">
+            <div class="channel-header">
+                <img src="" alt="Instagram Avatar" class="channel-avatar-lg" id="instagram-avatar">
+                <h2 class="channel-name-lg" id="instagram-name"></h2>
+                <p class="subscriber-label">Followers</p>
+                <div class="odometer" id="instagram-follower-count">0</div>
+            </div>
+            <div class="counter-actions">
+                <div class="share-dropdown">
+                    <button class="action-button share-button" style="background: linear-gradient(135deg,#e1306c,#fdc468);" onclick="toggleInstagramShareOptions()">
+                        <i class="fas fa-share-alt"></i>
+                        Share
+                    </button>
+                    <div class="share-options" id="instagram-share-options">
+                        <div class="share-option" onclick="shareInstagramOnTwitter()">
+                            <i class="fab fa-twitter"></i>
+                            Twitter
+                        </div>
+                        <div class="share-option" onclick="copyInstagramLink()">
+                            <i class="fas fa-link"></i>
+                            Copy Link
+                        </div>
+                    </div>
+                </div>
+                <button class="action-button minimal-button" onclick="activateInstagramMinimalMode()">
+                    <i class="fas fa-minimize"></i>
+                    Minimal Mode
+                </button>
+            </div>
+        </div>
     </div>
-
+    <!-- TikTok container -->
+    <div class="container hidden" id="tiktok-container">
+        <!-- Search card -->
+        <div class="search-card">
+            <h1 class="search-title" style="color:#000;">TikTok Follower Tracker</h1>
+            <p class="search-description">
+                Track real-time follower counts for any TikTok account with beautiful analytics.
+            </p>
+            <div class="search-form">
+                <input type="text" 
+                       class="search-input" 
+                       id="tiktok-input" 
+                       placeholder="Enter TikTok username"
+                       onkeypress="handleTikTokKeyPress(event)">
+                <button class="search-button" style="background: linear-gradient(135deg,#000,#ff0050);" onclick="fetchTikTokData()">
+                    <i class="fab fa-tiktok"></i>
+                    Search
+                </button>
+            </div>
+            <div class="loader" id="tiktok-loader">
+                <div class="loader-circle"></div>
+                <div class="loader-circle"></div>
+            </div>
+        </div>
+        <!-- Results container -->
+        <div class="results-container" id="tiktok-results-container">
+            <h2 class="results-title">Search Results</h2>
+            <div class="results-grid" id="tiktok-results-grid"></div>
+        </div>
+        <!-- Counter container -->
+        <div class="counter-container" id="tiktok-counter-container">
+            <div class="channel-header">
+                <img src="" alt="TikTok Avatar" class="channel-avatar-lg" id="tiktok-avatar">
+                <h2 class="channel-name-lg" id="tiktok-name"></h2>
+                <p class="subscriber-label">Followers</p>
+                <div class="odometer" id="tiktok-follower-count">0</div>
+            </div>
+            <div class="counter-actions">
+                <div class="share-dropdown">
+                    <button class="action-button share-button" style="background: linear-gradient(135deg,#000,#ff0050);" onclick="toggleTikTokShareOptions()">
+                        <i class="fas fa-share-alt"></i>
+                        Share
+                    </button>
+                    <div class="share-options" id="tiktok-share-options">
+                        <div class="share-option" onclick="shareTikTokOnTwitter()">
+                            <i class="fab fa-twitter"></i>
+                            Twitter
+                        </div>
+                        <div class="share-option" onclick="copyTikTokLink()">
+                            <i class="fas fa-link"></i>
+                            Copy Link
+                        </div>
+                    </div>
+                </div>
+                <button class="action-button minimal-button" onclick="activateTikTokMinimalMode()">
+                    <i class="fas fa-minimize"></i>
+                    Minimal Mode
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="footer hidden" id="main-footer">
+        FastCount  • Real-time Analytics • © 2025
+    </footer>
+    <!-- Odometer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
     <script>
-      // Combine load events for smoother initialization
-      window.addEventListener('load', () => {
-        document.getElementById('main-content').classList.add('visible');
+        // Global variables
+        let channelId, intervalId, odometer;
+        let twitterId, twitterIntervalId, twitterOdometer;
+        let instagramId, instagramIntervalId, instagramOdometer;
+        let tiktokId, tiktokIntervalId, tiktokOdometer, tiktokAvatar, tiktokName, tiktokUid;
+        // --- YouTube Video Counter ---
+        let ytvideoId, ytvideoIntervalId, ytvideoOdometerViews, ytvideoOdometerLikes, ytvideoOdometerComments;
 
-        // Check for URL hash (channel id) or minimal mode
-        const urlFragment = window.location.hash.slice(1);
-        if (urlFragment) {
-          channelId = urlFragment;
-          showCounter();
-          fetchStatsData();
-          intervalId = setInterval(fetchStatsData, 2000);
-        }
-        checkMinimalMode();
-      });
-
-      let channelId, intervalId, odometer;
-
-      function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-
-      function handleKeyPress(event) {
-        if (event.key === "Enter") {
-          fetchChannelData();
-        }
-      }
-
-      async function fetchChannelData() {
-        const channelName = document.getElementById("channel-input").value;
-        if (!channelName) {
-          showAlert("Please enter a channel name.");
-          return;
-        }
-
-        document.getElementById("loader").style.display = "block";
-        document.getElementById("result-list").innerHTML = "";
-        try {
-          const response = await fetch(`https://mixerno.space/api/youtube-channel-counter/search/${channelName}`);
-          const data = await response.json();
-          document.getElementById("loader").style.display = "none";
-          if (!data.list || data.list.length === 0) {
-            showAlert("Channel not found. Please try another name.");
-            return;
-          }
-          displayChannelResults(data.list);
-        } catch (error) {
-          console.error("Error fetching channel data:", error);
-          document.getElementById("loader").style.display = "none";
-          showAlert("An error occurred. Please try again later.");
-        }
-      }
-
-      function showAlert(message) {
-        const alertElement = document.createElement('div');
-        alertElement.style.position = 'fixed';
-        alertElement.style.top = '20px';
-        alertElement.style.left = '50%';
-        alertElement.style.transform = 'translateX(-50%)';
-        alertElement.style.backgroundColor = '#ff4444';
-        alertElement.style.color = 'white';
-        alertElement.style.padding = '15px 25px';
-        alertElement.style.borderRadius = '8px';
-        alertElement.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-        alertElement.style.zIndex = '1000';
-        alertElement.style.animation = 'fadeIn 0.3s ease-out';
-        alertElement.textContent = message;
-        document.body.appendChild(alertElement);
-        setTimeout(() => {
-          alertElement.style.animation = 'fadeOut 0.3s ease-out';
-          setTimeout(() => document.body.removeChild(alertElement), 300);
-        }, 3000);
-      }
-
-      function displayChannelResults(channels) {
-        const resultList = document.getElementById("result-list");
-        resultList.innerHTML = "";
-        channels.forEach((channel) => {
-          const channelElement = document.createElement("div");
-          channelElement.classList.add("channel-result");
-          const avatarImg = document.createElement("img");
-          avatarImg.src = channel[3] || 'https://via.placeholder.com/50';
-          avatarImg.classList.add("channel-avatar");
-          avatarImg.alt = `${channel[0]} avatar`;
-          const nameDiv = document.createElement("div");
-          nameDiv.textContent = channel[0];
-          nameDiv.classList.add("channel-name");
-          channelElement.appendChild(avatarImg);
-          channelElement.appendChild(nameDiv);
-          channelElement.onclick = () => {
-            const newUrl = `${window.location.origin}/#${channel[2]}`;
-            window.history.pushState({}, '', newUrl);
-            channelId = channel[2];
-            showCounter();
-            clearInterval(intervalId);
-            if (!odometer) {
-              odometer = new Odometer({ 
-                el: document.getElementById("subscriber-count"), 
-                value: 0,
-                format: '(,ddd)'
-              });
+        function initParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = window.innerWidth < 768 ? 20 : 50;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 6 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 5;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+                particlesContainer.appendChild(particle);
             }
-            fetchStatsData();
-            intervalId = setInterval(fetchStatsData, 2000);
-          };
-          resultList.appendChild(channelElement);
-        });
-      }
+        }
 
-      async function fetchStatsData() {
-        try {
-          const response = await fetch(`https://backend.mixerno.space/api/youtube/estv3/${channelId}`);
-          if (response.ok) {
-            const data = await response.json();
-            if (data && data.items && data.items.length > 0) {
-              const channel = data.items[0];
-              document.getElementById("channel-avatar").src = channel.snippet.thumbnails.default.url;
-              document.getElementById("channel-name").textContent = channel.snippet.title;
-              if (channel.statistics && typeof channel.statistics.subscriberCount === "number") {
-                if (!odometer) {
-                  odometer = new Odometer({ 
-                    el: document.getElementById("subscriber-count"), 
-                    value: channel.statistics.subscriberCount,
-                    format: '(,ddd)'
-                  });
-                } else {
-                  odometer.update(channel.statistics.subscriberCount);
+        function init() {
+            initParticles();
+            const urlFragment = window.location.hash.slice(1);
+            if (urlFragment) {
+                channelId = urlFragment;
+                showCounter();
+                fetchStatsData();
+                intervalId = setInterval(fetchStatsData, 2000);
+            }
+            checkMinimalMode();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                fetchChannelData();
+            }
+        }
+
+        async function fetchChannelData() {
+            const channelName = document.getElementById("channel-input").value.trim();
+            if (!channelName) {
+                showAlert("Please enter a channel name");
+                return;
+            }
+            const loader = document.getElementById("loader");
+            const resultsContainer = document.getElementById("results-container");
+            const resultsGrid = document.getElementById("results-grid");
+            loader.style.display = "block";
+            resultsContainer.style.display = "none";
+            resultsGrid.innerHTML = "";
+            try {
+                const response = await fetch(`https://mixerno.space/api/youtube-channel-counter/search/${encodeURIComponent(channelName)}`);
+                const data = await response.json();
+                loader.style.display = "none";
+                if (!data.list || data.list.length === 0) {
+                    showAlert("No channels found. Please try a different name.");
+                    return;
                 }
-              }
+                displayChannelResults(data.list);
+                resultsContainer.style.display = "block";
+                resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                loader.style.display = "none";
+                showAlert("An error occurred. Please try again later.");
             }
-          } else {
-            console.error("Failed to fetch stats data: ", response.statusText);
-          }
-        } catch (error) {
-          console.error("Error fetching stats data:", error);
         }
-      }
 
-      function showCounter() {
-        document.getElementById("counter-container").style.display = "block";
-        document.getElementById("result-container").style.display = "none";
-        document.querySelector(".search-card").style.display = "none";
-        scrollToTop();
-      }
+        function displayChannelResults(channels) {
+            const resultsGrid = document.getElementById("results-grid");
+            resultsGrid.innerHTML = "";
+            channels.forEach(channel => {
+                const channelCard = document.createElement('div');
+                channelCard.className = 'channel-card';
+                channelCard.innerHTML = `
+                    <img src="${channel[3] || 'https://via.placeholder.com/60'}" alt="${channel[0]}" class="channel-avatar">
+                    <div class="channel-info">
+                        <div class="channel-name">${channel[0]}</div>
+                        <div class="channel-id">${channel[2]}</div>
+                    </div>
+                `;
+                channelCard.addEventListener('click', () => {
+                    channelId = channel[2];
+                    const newUrl = `/youtube/${channelId}`;
+                    window.history.pushState({}, '', newUrl);
+                    showCounter();
+                    clearInterval(intervalId);
+                    fetchStatsData();
+                    intervalId = setInterval(fetchStatsData, 2000);
+                });
+                resultsGrid.appendChild(channelCard);
+            });
+        }
 
-      function toggleShareOptions() {
-        const options = document.getElementById("share-options");
-        options.style.display = options.style.display === "block" ? "none" : "block";
-      }
+        async function fetchStatsData() {
+            const id = getChannelIdFromPath() || channelId;
+            try {
+                const response = await fetch(`https://backend.mixerno.space/api/youtube/estv3/${id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.items && data.items.length > 0) {
+                        const channel = data.items[0];
+                        document.getElementById("channel-avatar").src = channel.snippet.thumbnails?.high?.url || channel.snippet.thumbnails?.default?.url || 'https://via.placeholder.com/120';
+                        document.getElementById("channel-name").textContent = channel.snippet.title;
+                        if (channel.statistics && typeof channel.statistics.subscriberCount === "number") {
+                            if (!odometer) {
+                                odometer = new Odometer({
+                                    el: document.getElementById("subscriber-count"),
+                                    value: channel.statistics.subscriberCount,
+                                    format: '(,ddd)',
+                                    theme: 'minimal'
+                                });
+                            } else {
+                                odometer.update(channel.statistics.subscriberCount);
+                            }
+                        }
+                    }
+                }
+            } catch (error) {}
+        }
 
-      function shareOnTwitter() {
-        const channelName = document.getElementById("channel-name").textContent || "YouTube channel";
-        const count = document.getElementById("subscriber-count").textContent || "0";
-        const text = `Check out ${channelName}'s subscriber count: ${count} on @FastCount!`;
-        const url = window.location.href;
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
-        document.getElementById("share-options").style.display = "none";
-      }
+        function showCounter() {
+            document.getElementById("counter-container").style.display = "block";
+            document.getElementById("results-container").style.display = "none";
+            document.querySelector(".search-card").style.display = "none";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-      function copyLink() {
-        navigator.clipboard.writeText(window.location.href)
-          .then(() => {
-            showAlert("Link copied to clipboard!");
+        function toggleShareOptions() {
+            const options = document.getElementById("share-options");
+            options.style.display = options.style.display === "block" ? "none" : "block";
+        }
+
+        function shareOnTwitter() {
+            const channelName = document.getElementById("channel-name").textContent || "YouTube channel";
+            const count = document.getElementById("subscriber-count").textContent || "0";
+            const text = `Check out ${channelName}'s subscriber count: ${count} on @FastCount!`;
+            const url = window.location.href;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
             document.getElementById("share-options").style.display = "none";
-          }).catch(err => {
-            console.error('Failed to copy: ', err);
-            showAlert("Failed to copy link. Please try again.");
-          });
-      }
-
-      function activateMinimalMode() {
-        document.body.classList.add('minimal-mode');
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set('minimal', 'true');
-        window.history.pushState({}, '', currentUrl);
-      }
-
-      function toggleTheme() {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-      }
-
-      // Set saved theme if exists
-      if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark-mode');
-      }
-
-      function updateVisitorCount() {
-        const randomVisitors = Math.floor(Math.random() * 2) + 1;
-        document.getElementById("visitor-count").textContent = randomVisitors;
-      }
-      
-      setInterval(updateVisitorCount, 30000);
-      updateVisitorCount();
-
-      document.addEventListener('click', function(event) {
-        const shareOptions = document.getElementById('share-options');
-        if (!event.target.closest('.share-container') && shareOptions.style.display === 'block') {
-          shareOptions.style.display = 'none';
         }
-      });
 
-      function checkMinimalMode() {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('minimal') === 'true') {
-          activateMinimalMode();
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => {
+                    showAlert("Link copied to clipboard!");
+                    document.getElementById("share-options").style.display = "none";
+                })
+                .catch(() => {
+                    showAlert("Failed to copy link. Please try again.");
+                });
         }
-      }
+
+        function activateMinimalMode() {
+            document.body.classList.add('minimal-mode');
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('minimal', 'true');
+            window.history.pushState({}, '', currentUrl);
+        }
+
+        function activateTwitterMinimalMode() {
+            document.body.classList.add('minimal-mode');
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('minimal', 'true');
+            window.history.pushState({}, '', currentUrl);
+        }
+
+        function activateInstagramMinimalMode() {
+            document.body.classList.add('minimal-mode');
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('minimal', 'true');
+            window.history.pushState({}, '', currentUrl);
+        }
+
+        function activateTikTokMinimalMode() {
+            document.body.classList.add('minimal-mode');
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('minimal', 'true');
+            window.history.pushState({}, '', currentUrl);
+        }
+
+        function checkMinimalMode() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('minimal') === 'true') {
+                document.body.classList.add('minimal-mode');
+                document.getElementById("counter-container").style.display = "block";
+            }
+        }
+
+        function checkTwitterMinimalMode() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('minimal') === 'true') {
+                document.body.classList.add('minimal-mode');
+                document.getElementById("twitter-counter-container").style.display = "block";
+            }
+        }
+
+        function checkInstagramMinimalMode() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('minimal') === 'true') {
+                document.body.classList.add('minimal-mode');
+                document.getElementById("instagram-counter-container").style.display = "block";
+            }
+        }
+
+        function checkTikTokMinimalMode() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('minimal') === 'true') {
+                document.body.classList.add('minimal-mode');
+                document.getElementById("tiktok-counter-container").style.display = "block";
+            }
+        }
+
+        function showAlert(message) {
+            const alert = document.createElement('div');
+            alert.className = 'alert';
+            alert.textContent = message;
+            alert.style.position = 'fixed';
+            alert.style.top = '20px';
+            alert.style.left = '50%';
+            alert.style.transform = 'translateX(-50%)';
+            alert.style.backgroundColor = '#ef4444';
+            alert.style.color = 'white';
+            alert.style.padding = '12px 24px';
+            alert.style.borderRadius = '8px';
+            alert.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+            alert.style.zIndex = '1000';
+            alert.style.animation = 'fadeIn 0.3s ease-out';
+            document.body.appendChild(alert);
+            setTimeout(() => {
+                alert.style.animation = 'fadeOut 0.3s ease-out';
+                setTimeout(() => document.body.removeChild(alert), 300);
+            }, 3000);
+        }
+
+        document.addEventListener('click', function(event) {
+            const shareOptions = document.getElementById('share-options');
+            if (shareOptions && shareOptions.style.display === 'block' && 
+                !event.target.closest('.share-dropdown') && 
+                !event.target.closest('.share-options')) {
+                shareOptions.style.display = 'none';
+            }
+            const twitterShareOptions = document.getElementById('twitter-share-options');
+            if (twitterShareOptions && twitterShareOptions.style.display === 'block' &&
+                !event.target.closest('.share-dropdown') &&
+                !event.target.closest('.share-options')) {
+                twitterShareOptions.style.display = 'none';
+            }
+            const instagramShareOptions = document.getElementById('instagram-share-options');
+            if (instagramShareOptions && instagramShareOptions.style.display === 'block' &&
+                !event.target.closest('.share-dropdown') &&
+                !event.target.closest('.share-options')) {
+                instagramShareOptions.style.display = 'none';
+            }
+            const tiktokShareOptions = document.getElementById('tiktok-share-options');
+            if (tiktokShareOptions && tiktokShareOptions.style.display === 'block' &&
+                !event.target.closest('.share-dropdown') &&
+                !event.target.closest('.share-options')) {
+                tiktokShareOptions.style.display = 'none';
+            }
+        });
+
+        function getChannelIdFromPath() {
+            const path = window.location.pathname.replace(/\/+$/, '');
+            const match = path.match(/\/youtube\/([^\/]+)/);
+            return match ? match[1] : null;
+        }
+
+        function getTwitterIdFromPath() {
+            const path = window.location.pathname.replace(/\/+$/, '');
+            const match = path.match(/\/twitter\/([^\/]+)/);
+            return match ? match[1] : null;
+        }
+
+        function getInstagramIdFromPath() {
+            const path = window.location.pathname.replace(/\/+$/, '');
+            const match = path.match(/\/instagram\/([^\/]+)/);
+            return match ? match[1] : null;
+        }
+
+        function getTikTokIdFromPath() {
+            const path = window.location.pathname.replace(/\/+$/, '');
+            const match = path.match(/\/tiktok\/([^\/]+)/);
+            return match ? match[1] : null;
+        }
+
+        function handleRoute() {
+            let path = window.location.pathname;
+            if (path.replace(/\/+$/, '') === '/youtube') {
+                showYoutube();
+                init();
+            }
+            else if (/\/youtube\/[^\/]+$/.test(path)) {
+                showYoutube();
+                const channelIdFromUrl = getChannelIdFromPath();
+                if (channelIdFromUrl) {
+                    channelId = channelIdFromUrl;
+                    showCounter();
+                    fetchStatsData();
+                    clearInterval(intervalId);
+                    intervalId = setInterval(fetchStatsData, 2000);
+                }
+                checkMinimalMode();
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.startsWith('#/youtube/')
+            ) {
+                window.location.replace(window.location.hash.slice(1));
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.length > 1
+            ) {
+                window.location.replace('/youtube/' + window.location.hash.substring(1));
+            }
+            else if (path.replace(/\/+$/, '') === '/twitter') {
+                showTwitter();
+                document.getElementById("twitter-container").classList.remove('hidden');
+                document.getElementById("main-container").classList.add('hidden');
+                document.getElementById("main-header").classList.remove('hidden');
+                document.getElementById("main-footer").classList.remove('hidden');
+                document.getElementById("twitter-counter-container").style.display = "none";
+                document.getElementById("twitter-results-container").style.display = "none";
+                document.querySelector("#twitter-container .search-card").style.display = "block";
+                checkTwitterMinimalMode();
+            }
+            else if (/\/twitter\/[^\/]+$/.test(path)) {
+                showTwitter();
+                document.getElementById("twitter-container").classList.remove('hidden');
+                document.getElementById("main-container").classList.add('hidden');
+                document.getElementById("main-header").classList.remove('hidden');
+                document.getElementById("main-footer").classList.remove('hidden');
+                const twitterIdFromUrl = getTwitterIdFromPath();
+                if (twitterIdFromUrl) {
+                    twitterId = twitterIdFromUrl;
+                    showTwitterCounter();
+                    fetchTwitterStats();
+                    clearInterval(twitterIntervalId);
+                    twitterIntervalId = setInterval(fetchTwitterStats, 2000);
+                }
+                checkTwitterMinimalMode();
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.startsWith('#/twitter/')
+            ) {
+                window.location.replace(window.location.hash.slice(1));
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.length > 1
+            ) {
+                window.location.replace('/twitter/' + window.location.hash.substring(1));
+            }
+            else if (path.replace(/\/+$/, '') === '/instagram') {
+                showInstagram();
+                document.getElementById("instagram-container").classList.remove('hidden');
+                document.getElementById("main-container").classList.add('hidden');
+                document.getElementById("main-header").classList.remove('hidden');
+                document.getElementById("main-footer").classList.remove('hidden');
+                document.getElementById("instagram-counter-container").style.display = "none";
+                document.getElementById("instagram-results-container").style.display = "none";
+                document.querySelector("#instagram-container .search-card").style.display = "block";
+                checkInstagramMinimalMode();
+            }
+            else if (/\/instagram\/[^\/]+$/.test(path)) {
+                showInstagram();
+                document.getElementById("instagram-container").classList.remove('hidden');
+                document.getElementById("main-container").classList.add('hidden');
+                document.getElementById("main-header").classList.remove('hidden');
+                document.getElementById("main-footer").classList.remove('hidden');
+                const instagramIdFromUrl = getInstagramIdFromPath();
+                if (instagramIdFromUrl) {
+                    instagramId = instagramIdFromUrl;
+                    showInstagramCounter();
+                    fetchInstagramStats();
+                    clearInterval(instagramIntervalId);
+                    instagramIntervalId = setInterval(fetchInstagramStats, 2000);
+                }
+                checkInstagramMinimalMode();
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.startsWith('#/instagram/')
+            ) {
+                window.location.replace(window.location.hash.slice(1));
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.length > 1
+            ) {
+                window.location.replace('/instagram/' + window.location.hash.substring(1));
+            }
+            else if (path.replace(/\/+$/, '') === '/tiktok') {
+                showTikTok();
+                document.getElementById("tiktok-container").classList.remove('hidden');
+                document.getElementById("main-container").classList.add('hidden');
+                document.getElementById("main-header").classList.remove('hidden');
+                document.getElementById("main-footer").classList.remove('hidden');
+                document.getElementById("tiktok-counter-container").style.display = "none";
+                document.getElementById("tiktok-results-container").style.display = "none";
+                document.querySelector("#tiktok-container .search-card").style.display = "block";
+                checkTikTokMinimalMode();
+            }
+            else if (/\/tiktok\/[^\/]+$/.test(path)) {
+                showTikTok();
+                document.getElementById("tiktok-container").classList.remove('hidden');
+                document.getElementById("main-container").classList.add('hidden');
+                document.getElementById("main-header").classList.remove('hidden');
+                document.getElementById("main-footer").classList.remove('hidden');
+                const tiktokIdFromUrl = getTikTokIdFromPath();
+                if (tiktokIdFromUrl) {
+                    tiktokId = tiktokIdFromUrl;
+                    // fetch UID and avatar/name
+                    fetch(`https://api-v2.nextcounts.com/api/search/tiktok/user/${encodeURIComponent(tiktokId)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.users && data.users.length > 0) {
+                                const user = data.users.find(u => u.userIdentifier === tiktokId) || data.users[0];
+                                tiktokUid = user.uid;
+                                tiktokAvatar = user.avatar;
+                                tiktokName = user.username;
+                                updateTikTokHeader(user);
+                                showTikTokCounter();
+                                fetchTikTokStats();
+                                clearInterval(tiktokIntervalId);
+                                tiktokIntervalId = setInterval(fetchTikTokStats, 2000);
+                            }
+                        });
+                }
+                checkTikTokMinimalMode();
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.startsWith('#/tiktok/')
+            ) {
+                window.location.replace(window.location.hash.slice(1));
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.length > 1
+            ) {
+                window.location.replace('/tiktok/' + window.location.hash.substring(1));
+            }
+            else {
+                showHome();
+                document.getElementById("twitter-container").classList.add('hidden');
+                document.getElementById("instagram-container").classList.add('hidden');
+                document.getElementById("tiktok-container").classList.add('hidden');
+            }
+        }
+
+        function showHome() {
+            document.getElementById('home-block').classList.remove('hidden');
+            document.getElementById('main-header').classList.add('hidden');
+            document.getElementById('main-container').classList.add('hidden');
+            document.getElementById('main-footer').classList.add('hidden');
+        }
+        function showYoutube() {
+            document.getElementById('home-block').classList.add('hidden');
+            document.getElementById('main-header').classList.remove('hidden');
+            document.getElementById('main-container').classList.remove('hidden');
+            document.getElementById('main-footer').classList.remove('hidden');
+        }
+        function showTwitter() {
+            document.getElementById('home-block').classList.add('hidden');
+            document.getElementById('twitter-container').classList.remove('hidden');
+            document.getElementById('main-header').classList.remove('hidden');
+            document.getElementById('main-footer').classList.remove('hidden');
+        }
+        function showInstagram() {
+            document.getElementById('home-block').classList.add('hidden');
+            document.getElementById('instagram-container').classList.remove('hidden');
+            document.getElementById('main-header').classList.remove('hidden');
+            document.getElementById('main-footer').classList.remove('hidden');
+        }
+        function showTikTok() {
+            document.getElementById('home-block').classList.add('hidden');
+            document.getElementById('tiktok-container').classList.remove('hidden');
+            document.getElementById('main-header').classList.remove('hidden');
+            document.getElementById('main-footer').classList.remove('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const goto = document.getElementById('goto-youtube');
+            if (goto) {
+                goto.addEventListener('click', function() {
+                    window.history.pushState({}, '', '/youtube');
+                    handleRoute();
+                });
+            }
+            const gotoTwitter = document.getElementById('goto-twitter');
+            if (gotoTwitter) {
+                gotoTwitter.addEventListener('click', function() {
+                    window.history.pushState({}, '', '/twitter');
+                    handleRoute();
+                });
+            }
+            const gotoInstagram = document.getElementById('goto-instagram');
+            if (gotoInstagram) {
+                gotoInstagram.addEventListener('click', function() {
+                    window.history.pushState({}, '', '/instagram');
+                    handleRoute();
+                });
+            }
+            const gotoTikTok = document.getElementById('goto-tiktok');
+            if (gotoTikTok) {
+                gotoTikTok.addEventListener('click', function() {
+                    window.history.pushState({}, '', '/tiktok');
+                    handleRoute();
+                });
+            }
+            // Ajout du gestionnaire pour le logo
+            const logo = document.getElementById('logo-link');
+            if (logo) {
+                logo.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.history.pushState({}, '', '/');
+                    handleRoute();
+                });
+            }
+            window.addEventListener('popstate', handleRoute);
+            handleRoute();
+        });
+
+        window.handleTwitterKeyPress = function(event) {
+            if (event.key === "Enter") {
+                window.fetchTwitterData();
+            }
+        };
+
+        window.fetchTwitterData = async function() {
+            const username = document.getElementById("twitter-input").value.trim();
+            if (!username) {
+                showAlert("Please enter a Twitter username");
+                return;
+            }
+            const loader = document.getElementById("twitter-loader");
+            const resultsContainer = document.getElementById("twitter-results-container");
+            const resultsGrid = document.getElementById("twitter-results-grid");
+            loader.style.display = "block";
+            resultsContainer.style.display = "none";
+            resultsGrid.innerHTML = "";
+            try {
+                const response = await fetch(`https://mixerno.space/api/twitter-user-counter/search/${encodeURIComponent(username)}`);
+                const data = await response.json();
+                loader.style.display = "none";
+                if (!data.list || data.list.length === 0) {
+                    showAlert("No accounts found. Please try another name.");
+                    return;
+                }
+                displayTwitterResults(data.list);
+                resultsContainer.style.display = "block";
+                resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                loader.style.display = "none";
+                showAlert("An error occurred during Twitter search.");
+            }
+        };
+
+        function displayTwitterResults(accounts) {
+            const resultsGrid = document.getElementById("twitter-results-grid");
+            resultsGrid.innerHTML = "";
+            accounts.forEach(account => {
+                // account = [name, avatar, username]
+                const card = document.createElement('div');
+                card.className = 'channel-card';
+                card.innerHTML = `
+                    <img src="${account[1] || 'https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png'}" alt="${account[0]}" class="channel-avatar">
+                    <div class="channel-info">
+                        <div class="channel-name">${account[0]}</div>
+                        <div class="channel-id">@${account[2]}</div>
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    twitterId = account[2];
+                    const newUrl = `/twitter/${twitterId}`;
+                    window.history.pushState({}, '', newUrl);
+                    window.showTwitterCounter();
+                    clearInterval(twitterIntervalId);
+                    fetchTwitterStats();
+                    twitterIntervalId = setInterval(fetchTwitterStats, 2000);
+                });
+                resultsGrid.appendChild(card);
+            });
+        }
+
+        window.showTwitterCounter = function() {
+            document.getElementById("twitter-counter-container").style.display = "block";
+            document.getElementById("twitter-results-container").style.display = "none";
+            document.querySelector("#twitter-container .search-card").style.display = "none";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        function fetchTwitterStats() {
+            const id = getTwitterIdFromPath() || twitterId;
+            fetch(`https://mixerno.space/api/twitter-user-counter/user/${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    const pfp = (data.user.find(u => u.value === "pfp") || {}).count || 'https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png';
+                    document.getElementById("twitter-avatar").src = pfp;
+                    const name = (data.user.find(u => u.value === "name") || {}).count || "";
+                    document.getElementById("twitter-name").textContent = name;
+                    const followers = (data.counts.find(c => c.value === "followers") || {}).count || 0;
+                    if (!twitterOdometer) {
+                        twitterOdometer = new Odometer({
+                            el: document.getElementById("twitter-follower-count"),
+                            value: followers,
+                            format: '(,ddd)',
+                            theme: 'minimal'
+                        });
+                    } else {
+                        twitterOdometer.update(followers);
+                    }
+                })
+                .catch(() => {});
+        }
+
+        function toggleTwitterShareOptions() {
+            const options = document.getElementById("twitter-share-options");
+            options.style.display = options.style.display === "block" ? "none" : "block";
+        }
+
+        function shareTwitterOnTwitter() {
+            const name = document.getElementById("twitter-name").textContent || "Twitter";
+            const count = document.getElementById("twitter-follower-count").textContent || "0";
+            const text = `Check out ${name}'s follower count: ${count} on @FastCount!`;
+            const url = window.location.href;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+            document.getElementById("twitter-share-options").style.display = "none";
+        }
+
+        function copyTwitterLink() {
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => {
+                    showAlert("Link copied to clipboard!");
+                    document.getElementById("twitter-share-options").style.display = "none";
+                })
+                .catch(() => showAlert("Failed to copy link. Please try again."));
+        }
+
+        window.handleInstagramKeyPress = function(event) {
+            if (event.key === "Enter") {
+                window.fetchInstagramData();
+            }
+        };
+
+        window.fetchInstagramData = async function() {
+            const username = document.getElementById("instagram-input").value.trim();
+            if (!username) {
+                showAlert("Please enter an Instagram username");
+                return;
+            }
+            const loader = document.getElementById("instagram-loader");
+            const resultsContainer = document.getElementById("instagram-results-container");
+            const resultsGrid = document.getElementById("instagram-results-grid");
+            loader.style.display = "block";
+            resultsContainer.style.display = "none";
+            resultsGrid.innerHTML = "";
+            try {
+                const response = await fetch(`https://mixerno.space/api/instagram-user-counter/search/${encodeURIComponent(username)}`);
+                const data = await response.json();
+                loader.style.display = "none";
+                if (!data.list || data.list.length === 0) {
+                    showAlert("No accounts found. Please try another name.");
+                    return;
+                }
+                displayInstagramResults(data.list);
+                resultsContainer.style.display = "block";
+                resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                loader.style.display = "none";
+                showAlert("An error occurred during Instagram search.");
+            }
+        };
+
+        function displayInstagramResults(accounts) {
+            const resultsGrid = document.getElementById("instagram-results-grid");
+            resultsGrid.innerHTML = "";
+            accounts.forEach(account => {
+                // account = [name, avatar, username]
+                const card = document.createElement('div');
+                card.className = 'channel-card';
+                card.innerHTML = `
+                    <img src="${account[1] || 'https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png'}" alt="${account[0]}" class="channel-avatar">
+                    <div class="channel-info">
+                        <div class="channel-name">${account[0]}</div>
+                        <div class="channel-id">@${account[2]}</div>
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    instagramId = account[2];
+                    const newUrl = `/instagram/${instagramId}`;
+                    window.history.pushState({}, '', newUrl);
+                    showInstagramCounter();
+                    clearInterval(instagramIntervalId);
+                    fetchInstagramStats();
+                    instagramIntervalId = setInterval(fetchInstagramStats, 2000);
+                });
+                resultsGrid.appendChild(card);
+            });
+        }
+
+        function showInstagramCounter() {
+            document.getElementById("instagram-counter-container").style.display = "block";
+            document.getElementById("instagram-results-container").style.display = "none";
+            document.querySelector("#instagram-container .search-card").style.display = "none";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function fetchInstagramStats() {
+            const id = getInstagramIdFromPath() || instagramId;
+            fetch(`https://mixerno.space/api/instagram-user-counter/user/${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    const pfp = (data.user.find(u => u.value === "pfp") || {}).count || 'https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png';
+                    document.getElementById("instagram-avatar").src = pfp;
+                    const name = (data.user.find(u => u.value === "name") || {}).count || "";
+                    document.getElementById("instagram-name").textContent = name;
+                    const followers = (data.counts.find(c => c.value === "followers") || {}).count || 0;
+                    if (!instagramOdometer) {
+                        instagramOdometer = new Odometer({
+                            el: document.getElementById("instagram-follower-count"),
+                            value: followers,
+                            format: '(,ddd)',
+                            theme: 'minimal'
+                        });
+                    } else {
+                        instagramOdometer.update(followers);
+                    }
+                })
+                .catch(() => {});
+        }
+
+        function toggleInstagramShareOptions() {
+            const options = document.getElementById("instagram-share-options");
+            options.style.display = options.style.display === "block" ? "none" : "block";
+        }
+
+        function shareInstagramOnTwitter() {
+            const name = document.getElementById("instagram-name").textContent || "Instagram";
+            const count = document.getElementById("instagram-follower-count").textContent || "0";
+            const text = `Check out ${name}'s follower count: ${count} on @FastCount!`;
+            const url = window.location.href;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+            document.getElementById("instagram-share-options").style.display = "none";
+        }
+
+        function copyInstagramLink() {
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => {
+                    showAlert("Link copied to clipboard!");
+                    document.getElementById("instagram-share-options").style.display = "none";
+                })
+                .catch(() => showAlert("Failed to copy link. Please try again."));
+        }
+
+        // TikTok handlers
+        window.handleTikTokKeyPress = function(event) {
+            if (event.key === "Enter") {
+                window.fetchTikTokData();
+            }
+        };
+
+        window.fetchTikTokData = async function() {
+            const username = document.getElementById("tiktok-input").value.trim();
+            if (!username) {
+                showAlert("Please enter a TikTok username");
+                return;
+            }
+            const loader = document.getElementById("tiktok-loader");
+            const resultsContainer = document.getElementById("tiktok-results-container");
+            const resultsGrid = document.getElementById("tiktok-results-grid");
+            loader.style.display = "block";
+            resultsContainer.style.display = "none";
+            resultsGrid.innerHTML = "";
+            try {
+                const response = await fetch(`https://api-v2.nextcounts.com/api/search/tiktok/user/${encodeURIComponent(username)}`);
+                const data = await response.json();
+                loader.style.display = "none";
+                if (!data.users || data.users.length === 0) {
+                    showAlert("No TikTok accounts found. Please try another name.");
+                    return;
+                }
+                displayTikTokResults(data.users);
+                resultsContainer.style.display = "block";
+                resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                loader.style.display = "none";
+                showAlert("An error occurred during TikTok search.");
+            }
+        };
+
+        function displayTikTokResults(accounts) {
+            const resultsGrid = document.getElementById("tiktok-results-grid");
+            resultsGrid.innerHTML = "";
+            accounts.forEach(account => {
+                // account: {username, userIdentifier, avatar, verified, uid, followers}
+                const card = document.createElement('div');
+                card.className = 'channel-card';
+                card.innerHTML = `
+                    <img src="${account.avatar || 'https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png'}" alt="${account.username}" class="channel-avatar">
+                    <div class="channel-info">
+                        <div class="channel-name">${account.username}${account.verified ? ' <i class="fas fa-check-circle" style="color:#4f8cff;font-size:1em;"></i>' : ''}</div>
+                        <div class="channel-id">@${account.userIdentifier}</div>
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    tiktokId = account.userIdentifier;
+                    tiktokUid = account.uid;
+                    tiktokAvatar = account.avatar;
+                    tiktokName = account.username;
+                    const newUrl = `/tiktok/${tiktokId}`;
+                    window.history.pushState({}, '', newUrl);
+                    showTikTokCounter();
+                    clearInterval(tiktokIntervalId);
+                    fetchTikTokStats();
+                    tiktokIntervalId = setInterval(fetchTikTokStats, 2000);
+                });
+                resultsGrid.appendChild(card);
+            });
+        }
+
+        function showTikTokCounter() {
+            document.getElementById("tiktok-counter-container").style.display = "block";
+            document.getElementById("tiktok-results-container").style.display = "none";
+            document.querySelector("#tiktok-container .search-card").style.display = "none";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function fetchTikTokStats() {
+            const id = getTikTokIdFromPath() || tiktokId;
+            const uid = tiktokUid || window.tiktokUidFromUrl;
+            // If not already set, fetch user info to get UID
+            if (!uid) {
+                // fallback: search again to get UID
+                fetch(`https://api-v2.nextcounts.com/api/search/tiktok/user/${encodeURIComponent(id)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.users && data.users.length > 0) {
+                            const user = data.users.find(u => u.userIdentifier === id) || data.users[0];
+                            tiktokUid = user.uid;
+                            tiktokAvatar = user.avatar;
+                            tiktokName = user.username;
+                            updateTikTokHeader(user);
+                            fetchTikTokStats();
+                        }
+                    });
+                return;
+            }
+            fetch(`https://api-v2.nextcounts.com/api/tiktok/user/stats/${uid}`)
+                .then(res => res.json())
+                .then(data => {
+                    updateTikTokHeader({avatar: tiktokAvatar, username: tiktokName});
+                    const followers = data.followers || 0;
+                    if (!tiktokOdometer) {
+                        tiktokOdometer = new Odometer({
+                            el: document.getElementById("tiktok-follower-count"),
+                            value: followers,
+                            format: '(,ddd)',
+                            theme: 'minimal'
+                        });
+                    } else {
+                        tiktokOdometer.update(followers);
+                    }
+                })
+                .catch(() => {});
+        }
+
+        function updateTikTokHeader(user) {
+            document.getElementById("tiktok-avatar").src = user.avatar || 'https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png';
+            document.getElementById("tiktok-name").textContent = user.username || "";
+        }
+
+        function toggleTikTokShareOptions() {
+            const options = document.getElementById("tiktok-share-options");
+            options.style.display = options.style.display === "block" ? "none" : "block";
+        }
+
+        function shareTikTokOnTwitter() {
+            const name = document.getElementById("tiktok-name").textContent || "TikTok";
+            const count = document.getElementById("tiktok-follower-count").textContent || "0";
+            const text = `Check out ${name}'s TikTok follower count: ${count} on @FastCount!`;
+            const url = window.location.href;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+            document.getElementById("tiktok-share-options").style.display = "none";
+        }
+
+        function copyTikTokLink() {
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => {
+                    showAlert("Link copied to clipboard!");
+                    document.getElementById("tiktok-share-options").style.display = "none";
+                })
+                .catch(() => showAlert("Failed to copy link. Please try again."));
+        }
+
+        // --- AJOUT : Gestionnaire pour la recherche vidéo YouTube ---
+        window.handleYTVideoKeyPress = function(event) {
+            if (event.key === "Enter") {
+                window.fetchYTVideoData();
+            }
+        };
+
+        window.fetchYTVideoData = async function() {
+            const videoTitle = document.getElementById("ytvideo-input").value.trim();
+            if (!videoTitle) {
+                showAlert("Please enter a video title");
+                return;
+            }
+            const loader = document.getElementById("ytvideo-loader");
+            const resultsContainer = document.getElementById("ytvideo-results-container");
+            const resultsGrid = document.getElementById("ytvideo-results-grid");
+            loader.style.display = "block";
+            resultsContainer.style.display = "none";
+            resultsGrid.innerHTML = "";
+            try {
+                const response = await fetch(`https://mixerno.space/api/youtube-video-counter/search/${encodeURIComponent(videoTitle)}`);
+                const data = await response.json();
+                loader.style.display = "none";
+                if (!data.list || data.list.length === 0) {
+                    showAlert("No videos found. Please try a different title.");
+                    return;
+                }
+                displayYTVideoResults(data.list);
+                resultsContainer.style.display = "block";
+                resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                loader.style.display = "none";
+                showAlert("An error occurred. Please try again later.");
+            }
+        };
+
+        function displayYTVideoResults(videos) {
+            const resultsGrid = document.getElementById("ytvideo-results-grid");
+            resultsGrid.innerHTML = "";
+            videos.forEach(video => {
+                // video = [title, videoId, channelTitle, thumbnail]
+                const card = document.createElement('div');
+                card.className = 'channel-card';
+                card.innerHTML = `
+                    <img src="${video[3] || 'https://via.placeholder.com/60'}" alt="${video[0]}" class="channel-avatar">
+                    <div class="channel-info">
+                        <div class="channel-name">${video[0]}</div>
+                        <div class="channel-id">${video[2]}</div>
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    showYTVideoCounter(video);
+                });
+                resultsGrid.appendChild(card);
+            });
+        }
+
+        function showYTVideoCounter(video) {
+            // video = [title, videoId, channelTitle, thumbnail]
+            ytvideoId = video[1];
+            // Correction : vérifier si l'ID vidéo est bien un ID YouTube valide (11 caractères, alphanumérique, - ou _)
+            const ytIdRegex = /^[a-zA-Z0-9_-]{11}$/;
+            if (!ytvideoId || !ytIdRegex.test(ytvideoId)) {
+                showAlert("Invalid video ID. Please try another video.");
+                return;
+            }
+            document.getElementById("ytvideo-thumbnail").src = video[3] || 'https://via.placeholder.com/120';
+            document.getElementById("ytvideo-title").textContent = video[0];
+            document.getElementById("ytvideo-counter-container").style.display = "block";
+            document.getElementById("ytvideo-results-container").style.display = "none";
+            document.querySelectorAll("#main-container .search-card")[1].style.display = "none";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            clearInterval(ytvideoIntervalId);
+            fetchYTVideoStats();
+            ytvideoIntervalId = setInterval(fetchYTVideoStats, 2000);
+        }
+
+        function fetchYTVideoStats() {
+            if (!ytvideoId || ytvideoId.startsWith('http')) return;
+            fetch(`https://mixerno.space/api/youtube-video-counter/video/${ytvideoId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (!data || !data.statistics) return;
+                    const stats = data.statistics;
+                    if (!ytvideoOdometerViews) {
+                        ytvideoOdometerViews = new Odometer({
+                            el: document.getElementById("ytvideo-views"),
+                            value: stats.viewCount || 0,
+                            format: '(,ddd)',
+                            theme: 'minimal'
+                        });
+                    } else {
+                        ytvideoOdometerViews.update(stats.viewCount || 0);
+                    }
+                    if (!ytvideoOdometerLikes) {
+                        ytvideoOdometerLikes = new Odometer({
+                            el: document.getElementById("ytvideo-likes"),
+                            value: stats.likeCount || 0,
+                            format: '(,ddd)',
+                            theme: 'minimal'
+                        });
+                    } else {
+                        ytvideoOdometerLikes.update(stats.likeCount || 0);
+                    }
+                    if (!ytvideoOdometerComments) {
+                        ytvideoOdometerComments = new Odometer({
+                            el: document.getElementById("ytvideo-comments"),
+                            value: stats.commentCount || 0,
+                            format: '(,ddd)',
+                            theme: 'minimal'
+                        });
+                    } else {
+                        ytvideoOdometerComments.update(stats.commentCount || 0);
+                    }
+                })
+                .catch(() => {});
+        }
     </script>
-  </body>
+</body>
 </html>
