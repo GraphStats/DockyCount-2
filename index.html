@@ -660,63 +660,6 @@
         .minimal-mode .odometer {
             color: var(--primary) !important;
         }
-        /* --- MODAL STYLES --- */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0; top: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.55);
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal-content {
-            background: var(--card-bg);
-            color: var(--light);
-            border-radius: 1.2rem;
-            max-width: 95vw;
-            width: 480px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow);
-            padding: 2.2rem 2rem 1.5rem 2rem;
-            position: relative;
-            animation: fadeIn 0.3s;
-        }
-        .modal-content h2 {
-            color: var(--primary);
-            margin-bottom: 1.2rem;
-            font-size: 2rem;
-            font-weight: 800;
-        }
-        .modal-close {
-            position: absolute;
-            top: 1.1rem;
-            right: 1.3rem;
-            background: none;
-            border: none;
-            color: var(--gray);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .modal-close:hover {
-            color: var(--primary);
-        }
-        .modal-content p, .modal-content ul {
-            margin-bottom: 1rem;
-            font-size: 1.05rem;
-        }
-        .modal-content ul {
-            padding-left: 1.2rem;
-        }
-        .modal-content a {
-            color: var(--primary);
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body class="dark-mode">
@@ -1074,48 +1017,10 @@
     <!-- Footer -->
     <footer class="footer hidden" id="main-footer">
         FastCount  • Real-time Analytics • © 2025
-        <span style="margin-left:1.5rem;">
-            <a href="#" id="privacy-link" style="color:#4f8cff; margin-right:1.2rem;">Privacy Policy</a>
-            <a href="#" id="contact-link" style="color:#4f8cff;">Contact</a>
-        </span>
+        <br>
+        <a href="/privacy-policy" style="color: var(--primary); text-decoration: underline;">Privacy Policy</a> • 
+        <a href="/contact" style="color: var(--primary); text-decoration: underline;">Contact</a>
     </footer>
-    <!-- Privacy Policy Modal -->
-    <div class="modal-overlay" id="privacy-modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('privacy-modal')">&times;</button>
-            <h2>Privacy Policy</h2>
-            <p>
-                <strong>Last updated:</strong> June 2024
-            </p>
-            <p>
-                FastCount does not collect or store any personal data from users. All analytics and counters are based on public data from social networks and are processed in real time without user tracking.
-            </p>
-            <ul>
-                <li>No account or login is required to use FastCount.</li>
-                <li>No cookies or tracking scripts are used for analytics or advertising purposes.</li>
-                <li>We do not share, sell, or store any user information.</li>
-            </ul>
-            <p>
-                If you have any questions about this Privacy Policy, please contact us at <a href="mailto:graphstats.1@gmail.com">graphstats.1@gmail.com</a>.
-            </p>
-        </div>
-    </div>
-    <!-- Contact Modal -->
-    <div class="modal-overlay" id="contact-modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('contact-modal')">&times;</button>
-            <h2>Contact</h2>
-            <p>
-                For any questions, suggestions, or issues regarding FastCount, please contact us at:
-            </p>
-            <p>
-                <a href="mailto:graphstats.1@gmail.com">graphstats.1@gmail.com</a>
-            </p>
-            <p>
-                We aim to respond to all inquiries within 48 hours.
-            </p>
-        </div>
-    </div>
     <!-- Odometer -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
     <script>
@@ -1360,13 +1265,255 @@
             }, 3000);
         }
 
-        // --- MODAL LOGIC ---
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
+        document.addEventListener('click', function(event) {
+            const shareOptions = document.getElementById('share-options');
+            if (shareOptions && shareOptions.style.display === 'block' && 
+                !event.target.closest('.share-dropdown') && 
+                !event.target.closest('.share-options')) {
+                shareOptions.style.display = 'none';
+            }
+            const twitterShareOptions = document.getElementById('twitter-share-options');
+            if (twitterShareOptions && twitterShareOptions.style.display === 'block' &&
+                !event.target.closest('.share-dropdown') &&
+                !event.target.closest('.share-options')) {
+                twitterShareOptions.style.display = 'none';
+            }
+            const instagramShareOptions = document.getElementById('instagram-share-options');
+            if (instagramShareOptions && instagramShareOptions.style.display === 'block' &&
+                !event.target.closest('.share-dropdown') &&
+                !event.target.closest('.share-options')) {
+                instagramShareOptions.style.display = 'none';
+            }
+            const tiktokShareOptions = document.getElementById('tiktok-share-options');
+            if (tiktokShareOptions && tiktokShareOptions.style.display === 'block' &&
+                !event.target.closest('.share-dropdown') &&
+                !event.target.closest('.share-options')) {
+                tiktokShareOptions.style.display = 'none';
+            }
+        });
+
+        function getChannelIdFromPath() {
+            const path = window.location.pathname.replace(/\/+$/, '');
+            const match = path.match(/\/youtube\/([^\/]+)/);
+            return match ? match[1] : null;
         }
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
+
+        function getTwitterIdFromPath() {
+            const path = window.location.pathname.replace(/\/+$/, '');
+            const match = path.match(/\/twitter\/([^\/]+)/);
+            return match ? match[1] : null;
         }
+
+        function getInstagramIdFromPath() {
+            const path = window.location.pathname.replace(/\/+$/, '');
+            const match = path.match(/\/instagram\/([^\/]+)/);
+            return match ? match[1] : null;
+        }
+
+        function getTikTokIdFromPath() {
+            const path = window.location.pathname.replace(/\/+$/, '');
+            const match = path.match(/\/tiktok\/([^\/]+)/);
+            return match ? match[1] : null;
+        }
+
+        function handleRoute() {
+            let path = window.location.pathname;
+            if (path.replace(/\/+$/, '') === '/youtube') {
+                showYoutube();
+                init();
+            }
+            else if (/\/youtube\/[^\/]+$/.test(path)) {
+                showYoutube();
+                const channelIdFromUrl = getChannelIdFromPath();
+                if (channelIdFromUrl) {
+                    channelId = channelIdFromUrl;
+                    showCounter();
+                    fetchStatsData();
+                    clearInterval(intervalId);
+                    intervalId = setInterval(fetchStatsData, 2000);
+                }
+                checkMinimalMode();
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.startsWith('#/youtube/')
+            ) {
+                window.location.replace(window.location.hash.slice(1));
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.length > 1
+            ) {
+                window.location.replace('/youtube/' + window.location.hash.substring(1));
+            }
+            else if (path.replace(/\/+$/, '') === '/twitter') {
+                showTwitter();
+                document.getElementById("twitter-container").classList.remove('hidden');
+                document.getElementById("main-container").classList.add('hidden');
+                document.getElementById("main-header").classList.remove('hidden');
+                document.getElementById("main-footer").classList.remove('hidden');
+                document.getElementById("twitter-counter-container").style.display = "none";
+                document.getElementById("twitter-results-container").style.display = "none";
+                document.querySelector("#twitter-container .search-card").style.display = "block";
+                checkTwitterMinimalMode();
+            }
+            else if (/\/twitter\/[^\/]+$/.test(path)) {
+                showTwitter();
+                document.getElementById("twitter-container").classList.remove('hidden');
+                document.getElementById("main-container").classList.add('hidden');
+                document.getElementById("main-header").classList.remove('hidden');
+                document.getElementById("main-footer").classList.remove('hidden');
+                const twitterIdFromUrl = getTwitterIdFromPath();
+                if (twitterIdFromUrl) {
+                    twitterId = twitterIdFromUrl;
+                    showTwitterCounter();
+                    fetchTwitterStats();
+                    clearInterval(twitterIntervalId);
+                    twitterIntervalId = setInterval(fetchTwitterStats, 2000);
+                }
+                checkTwitterMinimalMode();
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.startsWith('#/twitter/')
+            ) {
+                window.location.replace(window.location.hash.slice(1));
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.length > 1
+            ) {
+                window.location.replace('/twitter/' + window.location.hash.substring(1));
+            }
+            else if (path.replace(/\/+$/, '') === '/instagram') {
+                showInstagram();
+                document.getElementById("instagram-container").classList.remove('hidden');
+                document.getElementById("main-container").classList.add('hidden');
+                document.getElementById("main-header").classList.remove('hidden');
+                document.getElementById("main-footer").classList.remove('hidden');
+                document.getElementById("instagram-counter-container").style.display = "none";
+                document.getElementById("instagram-results-container").style.display = "none";
+                document.querySelector("#instagram-container .search-card").style.display = "block";
+                checkInstagramMinimalMode();
+            }
+            else if (/\/instagram\/[^\/]+$/.test(path)) {
+                showInstagram();
+                document.getElementById("instagram-container").classList.remove('hidden');
+                document.getElementById("main-container").classList.add('hidden');
+                document.getElementById("main-header").classList.remove('hidden');
+                document.getElementById("main-footer").classList.remove('hidden');
+                const instagramIdFromUrl = getInstagramIdFromPath();
+                if (instagramIdFromUrl) {
+                    instagramId = instagramIdFromUrl;
+                    showInstagramCounter();
+                    fetchInstagramStats();
+                    clearInterval(instagramIntervalId);
+                    instagramIntervalId = setInterval(fetchInstagramStats, 2000);
+                }
+                checkInstagramMinimalMode();
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.startsWith('#/instagram/')
+            ) {
+                window.location.replace(window.location.hash.slice(1));
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.length > 1
+            ) {
+                window.location.replace('/instagram/' + window.location.hash.substring(1));
+            }
+            else if (path.replace(/\/+$/, '') === '/tiktok') {
+                showTikTok();
+                document.getElementById("tiktok-container").classList.remove('hidden');
+                document.getElementById("main-container").classList.add('hidden');
+                document.getElementById("main-header").classList.remove('hidden');
+                document.getElementById("main-footer").classList.remove('hidden');
+                document.getElementById("tiktok-counter-container").style.display = "none";
+                document.getElementById("tiktok-results-container").style.display = "none";
+                document.querySelector("#tiktok-container .search-card").style.display = "block";
+                checkTikTokMinimalMode();
+            }
+            else if (/\/tiktok\/[^\/]+$/.test(path)) {
+                showTikTok();
+                document.getElementById("tiktok-container").classList.remove('hidden');
+                document.getElementById("main-container").classList.add('hidden');
+                document.getElementById("main-header").classList.remove('hidden');
+                document.getElementById("main-footer").classList.remove('hidden');
+                const tiktokIdFromUrl = getTikTokIdFromPath();
+                if (tiktokIdFromUrl) {
+                    tiktokId = tiktokIdFromUrl;
+                    // fetch UID and avatar/name
+                    fetch(`https://api-v2.nextcounts.com/api/search/tiktok/user/${encodeURIComponent(tiktokId)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.users && data.users.length > 0) {
+                                const user = data.users.find(u => u.userIdentifier === tiktokId) || data.users[0];
+                                tiktokUid = user.uid;
+                                tiktokAvatar = user.avatar;
+                                tiktokName = user.username;
+                                updateTikTokHeader(user);
+                                showTikTokCounter();
+                                fetchTikTokStats();
+                                clearInterval(tiktokIntervalId);
+                                tiktokIntervalId = setInterval(fetchTikTokStats, 2000);
+                            }
+                        });
+                }
+                checkTikTokMinimalMode();
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.startsWith('#/tiktok/')
+            ) {
+                window.location.replace(window.location.hash.slice(1));
+            }
+            else if (
+                (path === '' || path === '/') &&
+                window.location.hash.length > 1
+            ) {
+                window.location.replace('/tiktok/' + window.location.hash.substring(1));
+            }
+            else {
+                showHome();
+                document.getElementById("twitter-container").classList.add('hidden');
+                document.getElementById("instagram-container").classList.add('hidden');
+                document.getElementById("tiktok-container").classList.add('hidden');
+            }
+        }
+
+        function showHome() {
+            document.getElementById('home-block').classList.remove('hidden');
+            document.getElementById('main-header').classList.add('hidden');
+            document.getElementById('main-container').classList.add('hidden');
+            document.getElementById('main-footer').classList.add('hidden');
+        }
+        function showYoutube() {
+            document.getElementById('home-block').classList.add('hidden');
+            document.getElementById('main-header').classList.remove('hidden');
+            document.getElementById('main-container').classList.remove('hidden');
+            document.getElementById('main-footer').classList.remove('hidden');
+        }
+        function showTwitter() {
+            document.getElementById('home-block').classList.add('hidden');
+            document.getElementById('twitter-container').classList.remove('hidden');
+            document.getElementById('main-header').classList.remove('hidden');
+            document.getElementById('main-footer').classList.remove('hidden');
+        }
+        function showInstagram() {
+            document.getElementById('home-block').classList.add('hidden');
+            document.getElementById('instagram-container').classList.remove('hidden');
+            document.getElementById('main-header').classList.remove('hidden');
+            document.getElementById('main-footer').classList.remove('hidden');
+        }
+        function showTikTok() {
+            document.getElementById('home-block').classList.add('hidden');
+            document.getElementById('tiktok-container').classList.remove('hidden');
+            document.getElementById('main-header').classList.remove('hidden');
+            document.getElementById('main-footer').classList.remove('hidden');
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const goto = document.getElementById('goto-youtube');
             if (goto) {
@@ -1406,21 +1553,6 @@
                 });
             }
             window.addEventListener('popstate', handleRoute);
-            // Privacy/Contact modal triggers
-            const privacyLink = document.getElementById('privacy-link');
-            if (privacyLink) privacyLink.addEventListener('click', function(e) {
-                e.preventDefault(); openModal('privacy-modal');
-            });
-            const contactLink = document.getElementById('contact-link');
-            if (contactLink) contactLink.addEventListener('click', function(e) {
-                e.preventDefault(); openModal('contact-modal');
-            });
-            // Close modal on overlay click
-            document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
-                overlay.addEventListener('click', function(e) {
-                    if (e.target === overlay) overlay.classList.remove('active');
-                });
-            });
             handleRoute();
         });
 
@@ -1855,7 +1987,6 @@
 
         function showYTVideoCounter(video) {
             // video = [title, videoId, channelTitle, thumbnail]
-           
             ytvideoId = video[1];
             // Correction : vérifier si l'ID vidéo est bien un ID YouTube valide (11 caractères, alphanumérique, - ou _)
             const ytIdRegex = /^[a-zA-Z0-9_-]{11}$/;
