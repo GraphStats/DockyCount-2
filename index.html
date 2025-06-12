@@ -403,10 +403,22 @@
         .minimal-mode .header,
         .minimal-mode .search-card,
         .minimal-mode .results-container,
-        .minimal-mode .footer {
+        .minimal-mode .footer,
+        .minimal-mode .home-block,
+        .minimal-mode .particles,
+        .minimal-mode .home-card,
+        .minimal-mode .home-title,
+        .minimal-mode .home-link,
+        .minimal-mode [style*="FastCount"],
+        .minimal-mode [style*="Track subscribers"] {
             display: none !important;
         }
-        .minimal-mode .counter-container {
+        .minimal-mode .counter-container,
+        .minimal-mode #counter-container,
+        .minimal-mode #twitter-counter-container,
+        .minimal-mode #instagram-counter-container,
+        .minimal-mode #tiktok-counter-container,
+        .minimal-mode #ytvideo-counter-container {
             background: transparent;
             box-shadow: none;
             border: none;
@@ -664,54 +676,21 @@
 </head>
 <body class="dark-mode">
     <!-- Gros logo et titre FastCount ajouté -->
-    <div style="width:100%;text-align:center;padding-top:2.5rem;">
+    <div style="width:100%;text-align:center;padding-top:2.5rem;" class="minimal-hide">
         <span style="font-size:3.2rem;font-weight:900;letter-spacing:2px;color:#4f8cff;display:inline-flex;align-items:center;gap:1rem;">
             <i class="fas fa-chart-line" style="font-size:3.2rem;color:#4f8cff;"></i>
             FastCount
         </span>
     </div>
     <!-- Texte d'accueil ajouté -->
-    <div style="width:100%;text-align:center;padding:2rem 0 1rem 0;font-size:1.35rem;font-weight:600;color:#4f8cff;letter-spacing:1px;">
+    <div style="width:100%;text-align:center;padding:2rem 0 1rem 0;font-size:1.35rem;font-weight:600;color:#4f8cff;letter-spacing:1px;" class="minimal-hide">
         Track subscribers and followers on your favorite social networks in real time!
     </div>
     <!-- Floating particles background -->
     <div class="particles" id="particles"></div>
     
     <!-- Home block -->
-    <div class="home-block" id="home-block">
-        <div style="display: flex; gap: 2.5rem; align-items: flex-start;">
-            <div class="home-card">
-                <div class="home-title">
-                    <i class="fab fa-youtube" style="color:#ff0000; margin-right: 0.5rem;"></i>
-                    YouTube
-                </div>
-                <span class="home-link" id="goto-youtube">YouTube Live Subscriber Counter</span>
-            </div>
-            <div class="home-card">
-                <div class="home-title" style="color: #1da1f2;">
-                    <i class="fab fa-x-twitter" style="color:#1da1f2; margin-right: 0.5rem;"></i>
-                    Twitter
-                </div>
-                <span class="home-link" id="goto-twitter">Twitter Live Follower Counter</span>
-            </div>
-            <!-- Bloc Instagram -->
-            <div class="home-card">
-                <div class="home-title" style="color: #e1306c;">
-                    <i class="fab fa-instagram" style="color:#e1306c; margin-right: 0.5rem;"></i>
-                    Instagram
-                </div>
-                <span class="home-link" id="goto-instagram">Instagram Live Follower Counter</span>
-            </div>
-            <!-- Bloc TikTok -->
-            <div class="home-card">
-                <div class="home-title" style="color: #000;">
-                    <i class="fab fa-tiktok" style="color:#000; margin-right: 0.5rem;"></i>
-                    TikTok
-                </div>
-                <span class="home-link" id="goto-tiktok">TikTok Live Follower Counter</span>
-            </div>
-        </div>
-    </div>
+    <div class="home-block" id="home-block"></div>
     
     <!-- Header -->
     <header class="header hidden" id="main-header">
@@ -1211,35 +1190,54 @@
             window.history.pushState({}, '', currentUrl);
         }
 
+        // Ajout : Masquer les éléments d'accueil/logo en mode minimal
+        function hideMinimalExtras() {
+            document.querySelectorAll('.minimal-hide').forEach(el => el.style.display = 'none');
+            document.getElementById('home-block')?.classList.add('hidden');
+            document.getElementById('particles')?.classList.add('hidden');
+        }
+
+        function showOnlyCounter(counterId) {
+            // Masquer tous les compteurs
+            ['counter-container', 'twitter-counter-container', 'instagram-counter-container', 'tiktok-counter-container', 'ytvideo-counter-container'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+            // Afficher uniquement le compteur demandé
+            const el = document.getElementById(counterId);
+            if (el) el.style.display = 'block';
+        }
+
         function checkMinimalMode() {
             const params = new URLSearchParams(window.location.search);
             if (params.get('minimal') === 'true') {
                 document.body.classList.add('minimal-mode');
-                document.getElementById("counter-container").style.display = "block";
+                hideMinimalExtras();
+                showOnlyCounter('counter-container');
             }
         }
-
         function checkTwitterMinimalMode() {
             const params = new URLSearchParams(window.location.search);
             if (params.get('minimal') === 'true') {
                 document.body.classList.add('minimal-mode');
-                document.getElementById("twitter-counter-container").style.display = "block";
+                hideMinimalExtras();
+                showOnlyCounter('twitter-counter-container');
             }
         }
-
         function checkInstagramMinimalMode() {
             const params = new URLSearchParams(window.location.search);
             if (params.get('minimal') === 'true') {
                 document.body.classList.add('minimal-mode');
-                document.getElementById("instagram-counter-container").style.display = "block";
+                hideMinimalExtras();
+                showOnlyCounter('instagram-counter-container');
             }
         }
-
         function checkTikTokMinimalMode() {
             const params = new URLSearchParams(window.location.search);
             if (params.get('minimal') === 'true') {
                 document.body.classList.add('minimal-mode');
-                document.getElementById("tiktok-counter-container").style.display = "block";
+                hideMinimalExtras();
+                showOnlyCounter('tiktok-counter-container');
             }
         }
 
