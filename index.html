@@ -1986,11 +1986,6 @@
         }
 
         function showYTVideoCounter(video) {
-            ytvideoId = video[1];
-            if (!ytvideoId || !ytIdRegex.test(ytvideoId)) {
-                showAlert("Invalid video ID. Please try another video.");
-                return;
-            }
             document.getElementById("ytvideo-thumbnail").src = video[3] || 'https://via.placeholder.com/120';
             document.getElementById("ytvideo-title").textContent = video[0];
             document.getElementById("ytvideo-counter-container").style.display = "block";
